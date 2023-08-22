@@ -2,31 +2,25 @@ package com.neshan.restuarantmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
-
-import java.util.List;
 
 
 @Getter
 @Setter
 @Entity
-@Table(name = "menu")
-public class Menu {
+@Table(name = "menu_item")
+public class MenuItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
-    @Column(name = "title")
-    private String title;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "price")
+    private double price;
 
     @Column(name = "description")
     private String description;
-
-    @OneToMany
-    @JoinColumn(name = "menu_id")
-    List<MenuItem> menuItems;
-
-
 }

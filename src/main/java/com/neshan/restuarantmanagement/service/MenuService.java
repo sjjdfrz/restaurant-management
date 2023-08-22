@@ -22,11 +22,11 @@ public class MenuService {
         return menuRepository
                 .findAll()
                 .stream()
-                .map(menu -> mapStructMapper.menuToMenuDto(menu))
+                .map(mapStructMapper::menuToMenuDto)
                 .toList();
     }
 
-    public MenuDto getMenuById(int id) {
+    public MenuDto getMenuById(long id) {
 
         Menu menu = menuRepository
                 .findById(id)
@@ -41,7 +41,7 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-    public void updateMenu(int id, MenuDto menuRequest) {
+    public void updateMenu(long id, MenuDto menuRequest) {
         Menu menu = menuRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(
@@ -52,7 +52,7 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-    public void deleteMenu(int id) {
+    public void deleteMenu(long id) {
 
         Menu menu = menuRepository
                 .findById(id)

@@ -33,7 +33,7 @@ public class MenuController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<MenuDto>> getMenuById(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<MenuDto>> getMenuById(@PathVariable long id) {
 
         MenuDto menuDto = menuService.getMenuById(id);
 
@@ -61,7 +61,7 @@ public class MenuController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> updateMenu(@PathVariable int id, @Valid @RequestBody MenuDto menuDto) {
+    public ResponseEntity<ApiResponse<String>> updateMenu(@PathVariable long id, @Valid @RequestBody MenuDto menuDto) {
 
 
         menuService.updateMenu(id, menuDto);
@@ -76,7 +76,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> deleteMenu(@PathVariable long id) {
 
         menuService.deleteMenu(id);
 

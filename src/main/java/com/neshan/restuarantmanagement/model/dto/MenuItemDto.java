@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record MenuDto(
+public record MenuItemDto(
 
         long id,
 
-        @NotBlank(message = "Invalid Title: Empty title!")
-        String title,
+        @NotBlank(message = "Invalid Name: Empty name!")
+        String name,
 
-        String description) {
+        @NotBlank(message = "Invalid Price: Empty price!")
+        double price,
+
+        String description
+
+) {
 }
