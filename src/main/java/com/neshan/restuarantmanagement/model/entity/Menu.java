@@ -1,4 +1,4 @@
-package com.neshan.restuarantmanagement.model;
+package com.neshan.restuarantmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

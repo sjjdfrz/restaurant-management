@@ -1,7 +1,7 @@
 package com.neshan.restuarantmanagement.util;
 
-import com.neshan.restuarantmanagement.model.Menu;
-import com.neshan.restuarantmanagement.model.MenuDto;
+import com.neshan.restuarantmanagement.model.entity.Menu;
+import com.neshan.restuarantmanagement.model.dto.MenuDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

@@ -1,7 +1,7 @@
 package com.neshan.restuarantmanagement.controller;
 
 import com.neshan.restuarantmanagement.model.ApiResponse;
-import com.neshan.restuarantmanagement.model.MenuDto;
+import com.neshan.restuarantmanagement.model.dto.MenuDto;
 import com.neshan.restuarantmanagement.service.MenuService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

@@ -2,8 +2,8 @@ package com.neshan.restuarantmanagement.service;
 
 import com.neshan.restuarantmanagement.util.MapStructMapper;
 import com.neshan.restuarantmanagement.exception.NoSuchElementFoundException;
-import com.neshan.restuarantmanagement.model.Menu;
-import com.neshan.restuarantmanagement.model.MenuDto;
+import com.neshan.restuarantmanagement.model.entity.Menu;
+import com.neshan.restuarantmanagement.model.dto.MenuDto;
 import com.neshan.restuarantmanagement.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
