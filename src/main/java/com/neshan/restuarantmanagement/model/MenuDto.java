@@ -1,4 +1,4 @@
-package com.neshan.restuarantmanagement.menu;
+package com.neshan.restuarantmanagement.model;
 
 import jakarta.validation.constraints.NotBlank;
 

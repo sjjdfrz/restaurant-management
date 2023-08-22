@@ -1,31 +1,27 @@
-package com.neshan.restuarantmanagement.menu;
+package com.neshan.restuarantmanagement.controller;
 
-import com.neshan.restuarantmanagement.ApiResponse;
+import com.neshan.restuarantmanagement.model.ApiResponse;
+import com.neshan.restuarantmanagement.model.MenuDto;
+import com.neshan.restuarantmanagement.service.MenuService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/menus")
 @AllArgsConstructor
 public class MenuController {
 
-    private ModelMapper modelMapper;
     private MenuService menuService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<MenuDto>>> getAllMenus() {
 
-        List<MenuDto> menus = menuService
-                .getAllMenus()
-                .stream()
-                .map(menu -> modelMapper.map(menu, MenuDto.class))
-                .toList();
+        List<MenuDto> menus = menuService.getAllMenus();
 
         ApiResponse<List<MenuDto>> apiResponse = ApiResponse
                 .<List<MenuDto>>builder()
@@ -39,23 +35,21 @@ public class MenuController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MenuDto>> getMenuById(@PathVariable int id) {
 
-        Menu menu = menuService.getMenuById(id);
-        MenuDto menuResponse = modelMapper.map(menu, MenuDto.class);
+        MenuDto menuDto = menuService.getMenuById(id);
 
         ApiResponse<MenuDto> apiResponse = ApiResponse
                 .<MenuDto>builder()
                 .status("success")
-                .data(menuResponse)
+                .data(menuDto)
                 .build();
 
         return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> createMenu(@RequestBody MenuDto menuDto) {
+    public ResponseEntity<ApiResponse<String>> createMenu(@Valid @RequestBody MenuDto menuDto) {
 
-        Menu menuRequest = modelMapper.map(menuDto, Menu.class);
-        Menu menu = menuService.createMenu(menuRequest);
+        menuService.createMenu(menuDto);
 
         ApiResponse<String> apiResponse = ApiResponse
                 .<String>builder()
@@ -67,10 +61,10 @@ public class MenuController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> updateMenu(@PathVariable int id, @RequestBody MenuDto menuDto) {
+    public ResponseEntity<ApiResponse<String>> updateMenu(@PathVariable int id, @Valid @RequestBody MenuDto menuDto) {
 
-        Menu menuRequest = modelMapper.map(menuDto, Menu.class);
-        Menu menu = menuService.updateMenu(id, menuRequest);
+
+        menuService.updateMenu(id, menuDto);
 
         ApiResponse<String> apiResponse = ApiResponse
                 .<String>builder()

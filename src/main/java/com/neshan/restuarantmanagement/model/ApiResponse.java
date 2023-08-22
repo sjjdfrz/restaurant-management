@@ -1,4 +1,4 @@
-package com.neshan.restuarantmanagement;
+package com.neshan.restuarantmanagement.model;
 
 import lombok.*;
 
