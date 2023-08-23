@@ -36,21 +36,6 @@ public class UserService {
         return userMapper.userToUserDto(user);
     }
 
-    public void createUser(UserDto userDto) {
-        User user = userMapper.userDtoToUser(userDto);
-        userRepository.save(user);
-    }
-
-    public void updateUser(long id, UserDto userRequest) {
-        User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The user with ID %d was not found.", id)));
-
-        userMapper.updateUserFromDto(userRequest, user);
-        userRepository.save(user);
-    }
-
     public void deleteUser(long id) {
 
         User user = userRepository
