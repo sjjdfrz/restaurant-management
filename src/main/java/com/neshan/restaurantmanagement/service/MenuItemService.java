@@ -1,10 +1,10 @@
 package com.neshan.restaurantmanagement.service;
 
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
+import com.neshan.restaurantmanagement.mapper.MenuItemMapper;
 import com.neshan.restaurantmanagement.model.dto.MenuItemDto;
 import com.neshan.restaurantmanagement.model.entity.MenuItem;
 import com.neshan.restaurantmanagement.repository.MenuItemRepository;
-import com.neshan.restaurantmanagement.util.MapStructMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +15,14 @@ import java.util.List;
 public class MenuItemService {
 
     private final MenuItemRepository menuItemRepository;
-    private final MapStructMapper mapStructMapper;
+    private final MenuItemMapper menuItemMapper;
 
     public List<MenuItemDto> getAllMenuItems() {
 
         return menuItemRepository
                 .findAll()
                 .stream()
-                .map(mapStructMapper::menuItemToMenuItemDto)
+                .map(menuItemMapper::menuItemToMenuItemDto)
                 .toList();
     }
 
@@ -33,12 +33,12 @@ public class MenuItemService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The menu item with ID %d was not found.", id)));
 
-        return mapStructMapper.menuItemToMenuItemDto(menuItem);
+        return menuItemMapper.menuItemToMenuItemDto(menuItem);
     }
 
     public void createMenuItem(MenuItemDto menuItemDto) {
 
-        MenuItem menuItem = mapStructMapper.menuItemDtoToMenuItem(menuItemDto);
+        MenuItem menuItem = menuItemMapper.menuItemDtoToMenuItem(menuItemDto);
         menuItemRepository.save(menuItem);
     }
 

@@ -15,8 +15,6 @@ public record MenuDto(
         String title,
 
         String description,
-
         List<MenuItem> menuItems
-
 ) {
 }

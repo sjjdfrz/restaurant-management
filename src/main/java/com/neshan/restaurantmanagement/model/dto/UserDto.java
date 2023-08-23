@@ -1,24 +1,31 @@
 package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.neshan.restaurantmanagement.model.entity.Order;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserDto(
 
         long id,
 
-        @NotBlank(message = "Invalid Name: Empty name!")
-        String name,
+        @NotBlank(message = "Invalid firstName: Empty firstname!")
+        String firstName,
 
-        @Pattern(regexp = "09[0-9]{9}")
-        long phone,
+        @NotBlank(message = "Invalid lastName: Empty lastname!")
+        String lastName,
 
         @NotBlank(message = "Invalid Email: Empty email!")
         @Email
-        String email
+        String email,
 
+        @Min(8)
+        String password,
+
+        List<Order> orders
 ) {
 }

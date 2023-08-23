@@ -1,9 +1,10 @@
 package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.neshan.restaurantmanagement.model.entity.Order;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Set;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record RestaurantDto(
@@ -15,6 +16,7 @@ public record RestaurantDto(
 
         long telephone,
         String address,
-        Set<MenuDto> menus
+        List<MenuDto> menus,
+        List<Order> orders
 ) {
 }

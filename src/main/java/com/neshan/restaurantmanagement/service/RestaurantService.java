@@ -5,7 +5,7 @@ import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
 import com.neshan.restaurantmanagement.model.entity.Restaurant;
 import com.neshan.restaurantmanagement.repository.RestaurantRepository;
-import com.neshan.restaurantmanagement.util.RestaurantMapper;
+import com.neshan.restaurantmanagement.mapper.RestaurantMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,5 +27,9 @@ public class Order {
 
     @OneToMany
     @JoinColumn(name = "order_id")
-    private Set<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

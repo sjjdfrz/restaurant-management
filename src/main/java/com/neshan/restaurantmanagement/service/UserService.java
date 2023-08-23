@@ -4,7 +4,7 @@ import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.model.dto.UserDto;
 import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.repository.UserRepository;
-import com.neshan.restaurantmanagement.util.MapStructMapper;
+import com.neshan.restaurantmanagement.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +15,14 @@ import java.util.List;
 public class UserService {
 
     private UserRepository userRepository;
-    private MapStructMapper mapStructMapper;
+    private UserMapper userMapper;
 
     public List<UserDto> getAllUsers() {
 
         return userRepository
                 .findAll()
                 .stream()
-                .map(mapStructMapper::userToUserDto)
+                .map(userMapper::userToUserDto)
                 .toList();
     }
 
@@ -33,11 +33,11 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The user with ID %d was not found.", id)));
 
-        return mapStructMapper.userToUserDto(user);
+        return userMapper.userToUserDto(user);
     }
 
     public void createUser(UserDto userDto) {
-        User user = mapStructMapper.userDtoToUser(userDto);
+        User user = userMapper.userDtoToUser(userDto);
         userRepository.save(user);
     }
 
@@ -47,8 +47,7 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The user with ID %d was not found.", id)));
 
-//        user.setTitle(UserRequest.title());
-//        user.setDescription(UserRequest.description());
+        userMapper.updateUserFromDto(userRequest, user);
         userRepository.save(user);
     }
 
