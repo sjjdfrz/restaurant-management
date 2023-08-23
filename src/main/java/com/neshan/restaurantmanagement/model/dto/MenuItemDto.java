@@ -16,6 +16,5 @@ public record MenuItemDto(
         double price,
 
         String description
-
 ) {
 }

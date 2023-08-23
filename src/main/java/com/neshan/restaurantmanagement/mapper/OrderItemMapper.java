@@ -1,4 +1,4 @@
-package com.neshan.restaurantmanagement.util;
+package com.neshan.restaurantmanagement.mapper;
 
 import com.neshan.restaurantmanagement.model.dto.OrderItemDto;
 import com.neshan.restaurantmanagement.model.entity.OrderItem;

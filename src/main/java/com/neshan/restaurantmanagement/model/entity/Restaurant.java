@@ -3,7 +3,7 @@ package com.neshan.restaurantmanagement.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,8 +23,18 @@ public class Restaurant {
     private String address;
 
     @ManyToMany
-    @JoinTable(name = "restaurant_menu",
+    @JoinTable(
+            name = "restaurant_menu",
             joinColumns = @JoinColumn(name = "restaurant_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    private Set<Menu> menus;
+    private List<Menu> menus;
+
+    @ManyToMany
+    @JoinTable(
+            name = "restaurant_order",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    private List<Order> orders;
+
+
 }

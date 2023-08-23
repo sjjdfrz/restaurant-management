@@ -1,6 +1,6 @@
 package com.neshan.restaurantmanagement.service;
 
-import com.neshan.restaurantmanagement.util.MapStructMapper;
+import com.neshan.restaurantmanagement.mapper.MenuMapper;
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.model.entity.Menu;
 import com.neshan.restaurantmanagement.model.dto.MenuDto;
@@ -15,14 +15,14 @@ import java.util.List;
 public class MenuService {
 
     private MenuRepository menuRepository;
-    private MapStructMapper mapStructMapper;
+    private MenuMapper menuMapper;
 
     public List<MenuDto> getAllMenus() {
 
         return menuRepository
                 .findAll()
                 .stream()
-                .map(mapStructMapper::menuToMenuDto)
+                .map(menuMapper::menuToMenuDto)
                 .toList();
     }
 
@@ -33,11 +33,11 @@ public class MenuService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The menu with ID %d was not found.", id)));
 
-        return mapStructMapper.menuToMenuDto(menu);
+        return menuMapper.menuToMenuDto(menu);
     }
 
     public void createMenu(MenuDto menuDto) {
-        Menu menu = mapStructMapper.menuDtoToMenu(menuDto);
+        Menu menu = menuMapper.menuDtoToMenu(menuDto);
         menuRepository.save(menu);
     }
 
@@ -47,8 +47,7 @@ public class MenuService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The menu with ID %d was not found.", id)));
 
-        menu.setTitle(menuRequest.title());
-        menu.setDescription(menuRequest.description());
+        menuMapper.updateMenuFromDto(menuRequest, menu);
         menuRepository.save(menu);
     }
 

@@ -89,6 +89,4 @@ public class UserController {
 
         return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
     }
-
-
 }
