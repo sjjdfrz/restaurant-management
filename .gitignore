@@ -1,9 +1,11 @@
 HELP.md
-target
-.mvn
 src/main/resources/application.properties
-mvnw
-mvnw.cmd
+src/main/resources/application.yml
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
 ### STS ###
 .apt_generated

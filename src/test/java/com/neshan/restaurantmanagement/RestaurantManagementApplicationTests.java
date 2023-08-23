@@ -1,10 +1,10 @@
-package com.neshan.restuarantmanagement;
+package com.neshan.restaurantmanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RestuarantManagementApplicationTests {
+class RestaurantManagementApplicationTests {
 
     @Test
     void contextLoads() {

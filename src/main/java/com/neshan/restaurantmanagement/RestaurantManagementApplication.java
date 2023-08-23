@@ -1,13 +1,13 @@
-package com.neshan.restuarantmanagement;
+package com.neshan.restaurantmanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RestuarantManagementApplication {
+public class RestaurantManagementApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RestuarantManagementApplication.class, args);
+        SpringApplication.run(RestaurantManagementApplication.class, args);
     }
 
 }
