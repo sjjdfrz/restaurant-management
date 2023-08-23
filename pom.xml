@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.neshan</groupId>
-    <artifactId>restuarant-management</artifactId>
+    <artifactId>restaurant-management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>restuarant-management</name>
-    <description>restuarant-management</description>
+    <name>restaurant-management</name>
+    <description>restaurant-management</description>
     <properties>
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
