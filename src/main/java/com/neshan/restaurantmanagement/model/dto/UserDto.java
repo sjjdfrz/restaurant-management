@@ -23,9 +23,6 @@ public record UserDto(
         @Email
         String email,
 
-        @Min(8)
-        String password,
-
         List<Order> orders
 ) {
 }
