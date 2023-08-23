@@ -2,7 +2,6 @@ package com.neshan.restuarantmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
