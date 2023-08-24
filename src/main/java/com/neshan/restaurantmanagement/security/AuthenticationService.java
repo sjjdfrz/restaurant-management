@@ -1,20 +1,18 @@
 package com.neshan.restaurantmanagement.security;
 
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
+import com.neshan.restaurantmanagement.exception.PasswordMismatchException;
 import com.neshan.restaurantmanagement.mapper.UserMapper;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.Role;
 import com.neshan.restaurantmanagement.model.dto.UserDto;
 import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,11 @@ public class AuthenticationService {
     private final UserDetailsService userDetailsService;
     private final UserMapper userMapper;
 
-    public ApiResponse<Object> register(RegisterRequest request, HttpServletResponse response) {
+    public ApiResponse<Object> register(RegisterRequest request) {
+
+        if (!request.password().equals(request.confirmPassword())) {
+            throw new PasswordMismatchException("Passwords do not match");
+        }
 
         User user = User
                 .builder()

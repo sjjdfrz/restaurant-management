@@ -21,6 +21,10 @@ public record RegisterRequest(
 
         @Min(8)
         @NotBlank(message = "Invalid Password: Empty password!")
-        String password
+        String password,
+
+        @Min(8)
+        @NotBlank(message = "Invalid ConfirmPassword: Empty confirmPassword!")
+        String confirmPassword
 ) {
 }

@@ -15,9 +15,8 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Object>> register(@RequestBody RegisterRequest request,
-                                                        HttpServletResponse response) {
-        return ResponseEntity.ok(authenticationService.register(request, response));
+    public ResponseEntity<ApiResponse<Object>> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/login")
