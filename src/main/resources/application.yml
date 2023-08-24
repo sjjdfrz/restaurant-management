@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydb?currentSchema=mydb
+    username: postgres
+    password: sajjad#farzaneh1
+
+  jwt:
+    secret: 7aafce3d4195f61382454e069cae3568963997121f7d232b730c2f689aed360d
+    jwtExpirationInMs: 3600000 # 1-hour
+
+  main:
+    banner-mode: off
+
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+
+server:
+  servlet:
+    context-path: /api/v1
+  port: 3000
