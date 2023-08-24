@@ -1,3 +1,8 @@
+server:
+  servlet:
+    context-path: /api/v1
+  port: 3000
+
 spring:
   datasource:
     url: ${DATABASE_URL}
@@ -15,7 +20,38 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-server:
-  servlet:
-    context-path: /api/v1
-  port: 3000
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: /api/v1/login
+      strategy: first
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
+      rate-limits:
+        - expression: "getHeader('X-api-key')"
+          execute-condition: "getHeader('X-api-key').startsWith('PX001-')"
+          bandwidths:
+            - capacity: 10
+              time: 1
+              unit: hours
+
+    - cache-name: rate-limit-buckets
+      url: /api/v1/*
+      strategy: first
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
+      rate-limits:
+        - expression: "getHeader('X-api-key')"
+          execute-condition: "getHeader('X-api-key').startsWith('PX001-')"
+          bandwidths:
+            - capacity: 200
+              time: 30
+              unit: minutes
+
+
+
