@@ -37,7 +37,9 @@ public class User implements UserDetails {
     List<Order> orders;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
+
+    private boolean active = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -66,7 +68,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 
     @Override

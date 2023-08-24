@@ -49,9 +49,7 @@ public class MenuItemService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The menu item with ID %d was not found.", id)));
 
-        menuItem.setName(menuItemRequest.name());
-        menuItem.setPrice(menuItemRequest.price());
-        menuItem.setDescription(menuItemRequest.description());
+        menuItemMapper.updateMenuItemFromDto(menuItemRequest, menuItem);
         menuItemRepository.save(menuItem);
     }
 

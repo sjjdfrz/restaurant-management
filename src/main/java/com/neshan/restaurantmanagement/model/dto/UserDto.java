@@ -3,7 +3,6 @@ package com.neshan.restaurantmanagement.model.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.neshan.restaurantmanagement.model.entity.Order;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
