@@ -1,64 +1,99 @@
 package com.neshan.restaurantmanagement.service;
 
-import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.mapper.MenuItemMapper;
-import com.neshan.restaurantmanagement.model.dto.MenuItemDto;
+import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
+import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.entity.MenuItem;
+import com.neshan.restaurantmanagement.model.dto.MenuItemDto;
 import com.neshan.restaurantmanagement.repository.MenuItemRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class MenuItemService {
 
-    private final MenuItemRepository menuItemRepository;
-    private final MenuItemMapper menuItemMapper;
+    private MenuItemRepository menuItemRepository;
+    private MenuItemMapper menuItemMapper;
 
-    public List<MenuItemDto> getAllMenuItems() {
+    public ApiResponse<Page<MenuItemDto>> getAllMenuItems(int pageNo, int pageSize, String sortBy, String sortDir) {
 
-        return menuItemRepository
-                .findAll()
-                .stream()
-                .map(menuItemMapper::menuItemToMenuItemDto)
-                .toList();
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+
+        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
+        Page<MenuItemDto> pagedResult = menuItemRepository
+                .findAll(paging)
+                .map(menuItem -> menuItemMapper.menuItemToMenuItemDto(menuItem));
+
+        return ApiResponse
+                .<Page<MenuItemDto>>builder()
+                .status("success")
+                .data(pagedResult)
+                .build();
     }
 
-    public MenuItemDto getMenuItemById(long id) {
+    public ApiResponse<MenuItemDto> getMenuItemById(long id) {
 
         MenuItem menuItem = menuItemRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The menu item with ID %d was not found.", id)));
+                        String.format("The menuItem with ID %d was not found.", id)));
 
-        return menuItemMapper.menuItemToMenuItemDto(menuItem);
+        MenuItemDto menuItemDto = menuItemMapper.menuItemToMenuItemDto(menuItem);
+        return ApiResponse
+                .<MenuItemDto>builder()
+                .status("success")
+                .data(menuItemDto)
+                .build();
     }
 
-    public void createMenuItem(MenuItemDto menuItemDto) {
-
+    public ApiResponse<Object> createMenuItem(MenuItemDto menuItemDto) {
         MenuItem menuItem = menuItemMapper.menuItemDtoToMenuItem(menuItemDto);
         menuItemRepository.save(menuItem);
+
+        return ApiResponse
+                .builder()
+                .status("success")
+                .message("MenuItem was created successfully.")
+                .build();
     }
 
-    public void updateMenuItem(long id, MenuItemDto menuItemRequest) {
+    public ApiResponse<Object> updateMenuItem(long id, MenuItemDto menuItemRequest) {
 
         MenuItem menuItem = menuItemRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The menu item with ID %d was not found.", id)));
+                        String.format("The menuItem with ID %d was not found.", id)));
 
         menuItemMapper.updateMenuItemFromDto(menuItemRequest, menuItem);
         menuItemRepository.save(menuItem);
+
+        return ApiResponse
+                .builder()
+                .status("success")
+                .message("MenuItem was updated successfully.")
+                .build();
     }
 
-    public void deleteMenuItem(long id) {
+    public ApiResponse<Object> deleteMenuItem(long id) {
+
         MenuItem menuItem = menuItemRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The menu item with ID %d was not found.", id)));
+                        String.format("The menuItem with ID %d was not found.", id)));
 
         menuItemRepository.delete(menuItem);
+
+        return ApiResponse
+                .builder()
+                .status("success")
+                .message("MenuItem was deleted successfully.")
+                .build();
     }
 }
