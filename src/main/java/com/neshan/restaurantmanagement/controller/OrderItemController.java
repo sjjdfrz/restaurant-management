@@ -3,89 +3,57 @@ package com.neshan.restaurantmanagement.controller;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.OrderItemDto;
 import com.neshan.restaurantmanagement.service.OrderItemService;
+import com.neshan.restaurantmanagement.util.AppConstants;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/orderItem-items")
+@RequestMapping("/order-items")
 @AllArgsConstructor
 public class OrderItemController {
 
     private OrderItemService orderItemService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<OrderItemDto>>> getAllOrderItems() {
-
-        List<OrderItemDto> orderItems = orderItemService.getAllOrderItems();
-
-        ApiResponse<List<OrderItemDto>> apiResponse = ApiResponse
-                .<List<OrderItemDto>>builder()
-                .status("success")
-                .data(orderItems)
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ApiResponse<Page<OrderItemDto>>> getAllOrderItems(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+    ) {
+        ApiResponse<Page<OrderItemDto>> orderItems = orderItemService.getAllOrderItems(pageNo, pageSize, sortBy, sortDir);
+        return ResponseEntity.ok(orderItems);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OrderItemDto>> getOrderItemById(@PathVariable long id) {
 
-        OrderItemDto orderItemDto = orderItemService.getOrderItemById(id);
-
-        ApiResponse<OrderItemDto> apiResponse = ApiResponse
-                .<OrderItemDto>builder()
-                .status("success")
-                .data(orderItemDto)
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+        ApiResponse<OrderItemDto> orderItemDto = orderItemService.getOrderItemById(id);
+        return ResponseEntity.ok(orderItemDto);
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> createOrderItem(@Valid @RequestBody OrderItemDto orderItemDto) {
 
-        orderItemService.createOrderItem(orderItemDto);
-
-        ApiResponse<Object> apiResponse = ApiResponse
-                .builder()
-                .status("success")
-                .message("OrderItem was created successfully.")
-                .build();
-
-        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        ApiResponse<Object> response = orderItemService.createOrderItem(orderItemDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> updateOrderItem(@PathVariable long id, @Valid @RequestBody OrderItemDto orderItemDto) {
 
-
-        orderItemService.updateOrderItem(id, orderItemDto);
-
-        ApiResponse<Object> apiResponse = ApiResponse
-                .builder()
-                .status("success")
-                .message("OrderItem was updated successfully.")
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+        ApiResponse<Object> response = orderItemService.updateOrderItem(id, orderItemDto);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteOrderItem(@PathVariable long id) {
 
-        orderItemService.deleteOrderItem(id);
-
-        ApiResponse<Object> apiResponse = ApiResponse
-                .builder()
-                .status("success")
-                .message("OrderItem was deleted successfully.")
-                .build();
-
-        return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
+        ApiResponse<Object> response = orderItemService.deleteOrderItem(id);
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 }

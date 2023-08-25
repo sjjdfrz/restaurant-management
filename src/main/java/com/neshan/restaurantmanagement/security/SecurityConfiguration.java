@@ -1,5 +1,6 @@
 package com.neshan.restaurantmanagement.security;
 
+import com.neshan.restaurantmanagement.util.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,43 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private static final String[] GET_UN_SECURED_URLs = {
-            "/menus/**",
-            "/restaurants/**",
-    };
-
-    private static final String[] POST_UN_SECURED_URLs = {
-            "/register",
-            "/login"
-    };
-
-    private static final String[] GET_ADMIN_SECURED_URLs = {
-            "/orders/**",
-            "/menu-items/**",
-            "/order-items/**",
-            "/users/**",
-    };
-
-    private static final String[] POST_ADMIN_SECURED_URLs = {
-            "/menus",
-            "/menu-items",
-            "/restaurants",
-    };
-
-    private static final String[] PATCH_ADMIN_SECURED_URLs = {
-            "/menus/**",
-            "/menu-items/**",
-            "/restaurants/**",
-            "/orders/**",
-    };
-
-    private static final String[] DELETE_ADMIN_SECURED_URLs = {
-            "/menus/**",
-            "/menu-items/**",
-            "/restaurants/**",
-            "/users/**",
-    };
-
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -64,17 +28,17 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, GET_UN_SECURED_URLs)
+                        .requestMatchers(HttpMethod.GET, AppConstants.GET_UN_SECURED_URLs)
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, POST_UN_SECURED_URLs)
+                        .requestMatchers(HttpMethod.POST, AppConstants.POST_UN_SECURED_URLs)
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, GET_ADMIN_SECURED_URLs)
+                        .requestMatchers(HttpMethod.GET, AppConstants.GET_ADMIN_SECURED_URLs)
                         .hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, POST_ADMIN_SECURED_URLs)
+                        .requestMatchers(HttpMethod.POST, AppConstants.POST_ADMIN_SECURED_URLs)
                         .hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, PATCH_ADMIN_SECURED_URLs)
+                        .requestMatchers(HttpMethod.PATCH, AppConstants.PATCH_ADMIN_SECURED_URLs)
                         .hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, DELETE_ADMIN_SECURED_URLs)
+                        .requestMatchers(HttpMethod.DELETE, AppConstants.DELETE_ADMIN_SECURED_URLs)
                         .hasAuthority("ADMIN")
                         .anyRequest()
                         .authenticated()
