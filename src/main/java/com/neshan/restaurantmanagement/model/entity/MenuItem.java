@@ -2,6 +2,10 @@ package com.neshan.restaurantmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -30,4 +34,10 @@ public class MenuItem {
 
     private String description;
     private String category;
+
+    @CreatedDate
+    private Date created_at;
+
+    @LastModifiedDate
+    private Date modified_at;
 }

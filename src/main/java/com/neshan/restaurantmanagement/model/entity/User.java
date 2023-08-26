@@ -3,11 +3,14 @@ package com.neshan.restaurantmanagement.model.entity;
 import com.neshan.restaurantmanagement.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -51,6 +54,12 @@ public class User implements UserDetails {
     private Role role;
 
     private boolean active;
+
+    @CreatedDate
+    private Date created_at;
+
+    @LastModifiedDate
+    private Date modified_at;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

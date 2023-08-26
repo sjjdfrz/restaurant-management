@@ -2,7 +2,10 @@ package com.neshan.restaurantmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -40,5 +43,9 @@ public class Restaurant {
     @JoinColumn(name = "restaurant_id")
     private List<Order> orders;
 
+    @CreatedDate
+    private Date created_at;
 
+    @LastModifiedDate
+    private Date modified_at;
 }

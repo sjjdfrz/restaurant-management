@@ -2,6 +2,10 @@ package com.neshan.restaurantmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -28,4 +32,10 @@ public class OrderItem {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_item_id")
     private MenuItem menuItem;
+
+    @CreatedDate
+    private Date created_at;
+
+    @LastModifiedDate
+    private Date modified_at;
 }
