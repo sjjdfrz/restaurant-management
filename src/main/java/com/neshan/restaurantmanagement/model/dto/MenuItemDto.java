@@ -15,6 +15,7 @@ public record MenuItemDto(
         @NotNull(message = "Invalid Price: Null price!")
         double price,
 
-        String description
+        String description,
+        String category
 ) {
 }

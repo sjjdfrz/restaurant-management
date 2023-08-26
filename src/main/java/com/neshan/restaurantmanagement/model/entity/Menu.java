@@ -21,7 +21,10 @@ public class Menu {
     private String title;
     private String description;
 
-    @OneToMany
-    @JoinColumn(name = "menu_id")
+    @ManyToMany
+    @JoinTable(
+            name = "menu_menuitem",
+            joinColumns = @JoinColumn(name = "menu_id"),
+            inverseJoinColumns = @JoinColumn(name = "menuItem_id"))
     List<MenuItem> menuItems;
 }

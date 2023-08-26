@@ -22,18 +22,12 @@ public class Restaurant {
     private long telephone;
     private String address;
 
-    @ManyToMany
-    @JoinTable(
-            name = "restaurant_menu",
-            joinColumns = @JoinColumn(name = "restaurant_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_id"))
+    @OneToMany
+    @JoinColumn(name = "restaurant_id")
     private List<Menu> menus;
 
-    @ManyToMany
-    @JoinTable(
-            name = "restaurant_order",
-            joinColumns = @JoinColumn(name = "restaurant_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @OneToMany
+    @JoinColumn(name = "restaurant_id")
     private List<Order> orders;
 
 
