@@ -4,6 +4,7 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.UserDto;
 import com.neshan.restaurantmanagement.service.UserService;
 import com.neshan.restaurantmanagement.util.AppConstants;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@RateLimiter(name = "rate-limit")
 @AllArgsConstructor
 public class UserController {
 
@@ -21,10 +23,9 @@ public class UserController {
     public ResponseEntity<ApiResponse<Page<UserDto>>> getAllUsers(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
     ) {
-        ApiResponse<Page<UserDto>> users = userService.getAllUsers(pageNo, pageSize, sortBy, sortDir);
+        ApiResponse<Page<UserDto>> users = userService.getAllUsers(pageNo, pageSize, sortBy);
         return ResponseEntity.ok(users);
     }
 

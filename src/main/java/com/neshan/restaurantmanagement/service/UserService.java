@@ -6,9 +6,9 @@ import com.neshan.restaurantmanagement.model.dto.UserDto;
 import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.repository.UserRepository;
 import com.neshan.restaurantmanagement.mapper.UserMapper;
+import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,13 +22,11 @@ public class UserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
 
-    public ApiResponse<Page<UserDto>> getAllUsers(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ApiResponse<Page<UserDto>> getAllUsers(int pageNo, int pageSize, String sortBy) {
 
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-                Sort.by(sortBy).ascending() :
-                Sort.by(sortBy).descending();
+        List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
+        Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
         Page<UserDto> pagedResult = userRepository
                 .findAll(paging)
                 .map(user -> userMapper.userToUserDto(user));

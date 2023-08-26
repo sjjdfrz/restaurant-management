@@ -15,11 +15,21 @@ import java.util.List;
 public class Restaurant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "menu_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(updatable = false)
     private long id;
 
+    @Column(nullable = false)
     private String name;
+
     private long telephone;
+
+    @Column(nullable = false)
     private String address;
 
     @OneToMany

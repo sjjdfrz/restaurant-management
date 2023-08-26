@@ -6,12 +6,14 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.entity.Restaurant;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
 import com.neshan.restaurantmanagement.repository.RestaurantRepository;
+import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,13 +22,11 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
     private RestaurantMapper restaurantMapper;
 
-    public ApiResponse<Page<RestaurantDto>> getAllRestaurants(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ApiResponse<Page<RestaurantDto>> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
 
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-                Sort.by(sortBy).ascending() :
-                Sort.by(sortBy).descending();
+        List<Order> orders = PaginationSorting.getOrders(sortBy);
+        Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
         Page<RestaurantDto> pagedResult = restaurantRepository
                 .findAll(paging)
                 .map(restaurant -> restaurantMapper.restaurantToRestaurantDto(restaurant));

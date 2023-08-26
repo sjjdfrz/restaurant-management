@@ -13,9 +13,16 @@ import lombok.*;
 public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "menu_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(updatable = false)
     private long id;
 
+    @Column(nullable = false)
     private int quantity;
 
     @OneToOne

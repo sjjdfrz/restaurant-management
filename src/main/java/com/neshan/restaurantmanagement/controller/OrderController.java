@@ -4,6 +4,7 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
 import com.neshan.restaurantmanagement.service.OrderService;
 import com.neshan.restaurantmanagement.util.AppConstants;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
+@RateLimiter(name = "rate-limit")
 @AllArgsConstructor
 public class OrderController {
 
@@ -22,10 +24,9 @@ public class OrderController {
     public ResponseEntity<ApiResponse<Page<OrderDto>>> getAllOrders(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
     ) {
-        ApiResponse<Page<OrderDto>> orders = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir);
+        ApiResponse<Page<OrderDto>> orders = orderService.getAllOrders(pageNo, pageSize, sortBy);
         return ResponseEntity.ok(orders);
     }
 
