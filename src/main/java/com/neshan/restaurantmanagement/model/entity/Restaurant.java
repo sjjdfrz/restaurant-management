@@ -32,11 +32,11 @@ public class Restaurant {
     @Column(nullable = false)
     private String address;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "restaurant_id")
     private List<Menu> menus;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "restaurant_id")
     private List<Order> orders;
 

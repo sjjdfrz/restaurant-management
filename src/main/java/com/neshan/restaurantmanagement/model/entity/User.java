@@ -44,7 +44,7 @@ public class User implements UserDetails {
     @Transient
     private String confirmPassword;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Order> orders;
 
     @Enumerated(EnumType.STRING)
