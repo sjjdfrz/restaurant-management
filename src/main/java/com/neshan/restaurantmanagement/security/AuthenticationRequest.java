@@ -1,7 +1,6 @@
 package com.neshan.restaurantmanagement.security;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -12,7 +11,6 @@ public record AuthenticationRequest(
         @Email
         String email,
 
-        @Min(8)
         @NotBlank(message = "Invalid Password: Empty password!")
         String password
 ) {

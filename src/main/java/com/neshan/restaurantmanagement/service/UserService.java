@@ -8,7 +8,6 @@ import com.neshan.restaurantmanagement.repository.UserRepository;
 import com.neshan.restaurantmanagement.mapper.UserMapper;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,17 +21,17 @@ public class UserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
 
-    public ApiResponse<Page<UserDto>> getAllUsers(int pageNo, int pageSize, String sortBy) {
+    public ApiResponse<List<UserDto>> getAllUsers(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
         Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        Page<UserDto> pagedResult = userRepository
+        List<UserDto> pagedResult = userRepository
                 .findAll(paging)
                 .map(user -> userMapper.userToUserDto(user));
 
         return ApiResponse
-                .<Page<UserDto>>builder()
+                .<List<UserDto>>builder()
                 .status("success")
                 .data(pagedResult)
                 .build();

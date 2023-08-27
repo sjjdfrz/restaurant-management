@@ -1,10 +1,12 @@
 package com.neshan.restaurantmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neshan.restaurantmanagement.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,13 +21,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
     @SequenceGenerator(
-            name = "menu_sequence",
-            sequenceName = "student_sequence",
+            name = "user_sequence",
+            sequenceName = "user_sequence",
             allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -56,9 +59,11 @@ public class User implements UserDetails {
     private boolean active;
 
     @CreatedDate
+    @JsonIgnore
     private Date created_at;
 
     @LastModifiedDate
+    @JsonIgnore
     private Date modified_at;
 
     @Override

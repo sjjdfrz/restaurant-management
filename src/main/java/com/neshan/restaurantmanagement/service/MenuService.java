@@ -8,7 +8,6 @@ import com.neshan.restaurantmanagement.model.dto.MenuDto;
 import com.neshan.restaurantmanagement.repository.MenuRepository;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,17 +21,18 @@ public class MenuService {
     private MenuRepository menuRepository;
     private MenuMapper menuMapper;
 
-    public ApiResponse<Page<MenuDto>> getAllMenus(int pageNo, int pageSize, String sortBy) {
+    public ApiResponse<List<MenuDto>> getAllMenus(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
         Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        Page<MenuDto> pagedResult = menuRepository
+        List<MenuDto> pagedResult = menuRepository
                 .findAll(paging)
-                .map(menu -> menuMapper.menuToMenuDto(menu));
+                .map(menu -> menuMapper.menuToMenuDto(menu))
+                .getContent();
 
         return ApiResponse
-                .<Page<MenuDto>>builder()
+                .<List<MenuDto>>builder()
                 .status("success")
                 .data(pagedResult)
                 .build();

@@ -7,10 +7,11 @@ import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order-items")
@@ -21,12 +22,12 @@ public class OrderItemController {
     private OrderItemService orderItemService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<OrderItemDto>>> getAllOrderItems(
+    public ResponseEntity<ApiResponse<List<OrderItemDto>>> getAllOrderItems(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
     ) {
-        ApiResponse<Page<OrderItemDto>> orderItems = orderItemService.getAllOrderItems(pageNo, pageSize, sortBy);
+        ApiResponse<List<OrderItemDto>> orderItems = orderItemService.getAllOrderItems(pageNo, pageSize, sortBy);
         return ResponseEntity.ok(orderItems);
     }
 
