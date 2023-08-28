@@ -30,19 +30,15 @@ public class Restaurant {
     @Column(updatable = false)
     private long id;
 
-    @Column(nullable = false)
     private String name;
-
     private long telephone;
-
-    @Column(nullable = false)
     private String address;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "restaurant_id")
     private List<Menu> menus;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "restaurant_id")
     private List<Order> orders;
 

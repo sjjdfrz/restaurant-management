@@ -32,11 +32,11 @@ public class Order {
 
     private double totalCost;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

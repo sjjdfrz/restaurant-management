@@ -28,7 +28,8 @@ public class UserService {
 
         List<UserDto> pagedResult = userRepository
                 .findAll(paging)
-                .map(user -> userMapper.userToUserDto(user));
+                .map(user -> userMapper.userToUserDto(user))
+                .getContent();
 
         return ApiResponse
                 .<List<UserDto>>builder()

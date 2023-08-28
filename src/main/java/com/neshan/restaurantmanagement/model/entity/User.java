@@ -35,28 +35,26 @@ public class User implements UserDetails {
     @Column(updatable = false)
     private long id;
 
-    @Column(nullable = false)
     private String firstName;
-
-    @Column(nullable = false)
     private String lastName;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Transient
     private String confirmPassword;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     List<Order> orders;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
-    private boolean active;
+    @Builder.Default
+    private boolean active = true;
 
     @CreatedDate
     @JsonIgnore

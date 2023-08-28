@@ -29,12 +29,8 @@ public class MenuItem {
     @Column(updatable = false)
     private long id;
 
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private double price;
-
     private String description;
     private String category;
 

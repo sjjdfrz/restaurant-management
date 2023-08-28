@@ -30,9 +30,7 @@ public class Menu {
     @Column(updatable = false)
     private long id;
 
-    @Column(nullable = false)
     private String title;
-
     private String description;
 
     @ManyToMany

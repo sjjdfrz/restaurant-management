@@ -29,10 +29,9 @@ public class OrderItem {
     @Column(updatable = false)
     private long id;
 
-    @Column(nullable = false)
     private int quantity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "menu_item_id")
     private MenuItem menuItem;
 
