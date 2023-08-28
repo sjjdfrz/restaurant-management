@@ -1,13 +1,18 @@
 package com.neshan.restaurantmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neshan.restaurantmanagement.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -16,31 +21,48 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(updatable = false)
     private long id;
 
-    @Column(name = "first_name")
     private String firstName;
-
-    @Column(name = "last_name")
     private String lastName;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
+
+    @Transient
     private String confirmPassword;
 
     @OneToMany(mappedBy = "user")
     List<Order> orders;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Role role = Role.USER;
 
+    @Builder.Default
     private boolean active = true;
+
+    @CreatedDate
+    @JsonIgnore
+    private Date created_at;
+
+    @LastModifiedDate
+    @JsonIgnore
+    private Date modified_at;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

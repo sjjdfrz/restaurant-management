@@ -6,12 +6,13 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.entity.MenuItem;
 import com.neshan.restaurantmanagement.model.dto.MenuItemDto;
 import com.neshan.restaurantmanagement.repository.MenuItemRepository;
+import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,19 +21,18 @@ public class MenuItemService {
     private MenuItemRepository menuItemRepository;
     private MenuItemMapper menuItemMapper;
 
-    public ApiResponse<Page<MenuItemDto>> getAllMenuItems(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ApiResponse<List<MenuItemDto>> getAllMenuItems(int pageNo, int pageSize, String sortBy) {
 
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-                Sort.by(sortBy).ascending() :
-                Sort.by(sortBy).descending();
+        List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
+        Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
-        Page<MenuItemDto> pagedResult = menuItemRepository
+        List<MenuItemDto> pagedResult = menuItemRepository
                 .findAll(paging)
-                .map(menuItem -> menuItemMapper.menuItemToMenuItemDto(menuItem));
+                .map(menuItem -> menuItemMapper.menuItemToMenuItemDto(menuItem))
+                .getContent();
 
         return ApiResponse
-                .<Page<MenuItemDto>>builder()
+                .<List<MenuItemDto>>builder()
                 .status("success")
                 .data(pagedResult)
                 .build();

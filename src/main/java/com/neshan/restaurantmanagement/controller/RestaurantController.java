@@ -4,28 +4,31 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
 import com.neshan.restaurantmanagement.service.RestaurantService;
 import com.neshan.restaurantmanagement.util.AppConstants;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/restaurants")
+@RateLimiter(name = "rate-limit")
 @AllArgsConstructor
 public class RestaurantController {
 
     private RestaurantService restaurantService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<RestaurantDto>>> getAllRestaurants(
+    public ResponseEntity<ApiResponse<List<RestaurantDto>>> getAllRestaurants(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
+
     ) {
-        ApiResponse<Page<RestaurantDto>> restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy, sortDir);
+        ApiResponse<List<RestaurantDto>> restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy);
         return ResponseEntity.ok(restaurants);
     }
 
@@ -56,4 +59,8 @@ public class RestaurantController {
         ApiResponse<Object> response = restaurantService.deleteRestaurant(id);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
+
+//    private void fallbackMethod(RequestNotPermitted requestNotPermitted) {
+//        throw requestNotPermitted;
+//    }
 }

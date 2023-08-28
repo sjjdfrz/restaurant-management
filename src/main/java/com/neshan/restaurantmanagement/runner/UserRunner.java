@@ -25,9 +25,8 @@ public class UserRunner implements CommandLineRunner {
                 .firstName("Sajjad")
                 .lastName("Farzane")
                 .email("sajjadfarzane1@gmail.com")
-                .password(passwordEncoder.encode("sajjad1234"))
+                .password(passwordEncoder.encode("sajjad12345"))
                 .role(Role.ADMIN)
-                .active(true)
                 .build();
 
         User user2 = User
@@ -35,9 +34,7 @@ public class UserRunner implements CommandLineRunner {
                 .firstName("Saleh")
                 .lastName("Shakour")
                 .email("salehshakour@gmail.com")
-                .password(passwordEncoder.encode("saleh1234"))
-                .role(Role.USER)
-                .active(true)
+                .password(passwordEncoder.encode("saleh12345"))
                 .build();
 
         User user3 = User
@@ -45,9 +42,7 @@ public class UserRunner implements CommandLineRunner {
                 .firstName("Soroosh")
                 .lastName("Faal")
                 .email("sorooshfaal@gmail.com")
-                .password(passwordEncoder.encode("soroosh1234"))
-                .role(Role.USER)
-                .active(true)
+                .password(passwordEncoder.encode("soroosh12345"))
                 .build();
 
         User user4 = User
@@ -55,9 +50,7 @@ public class UserRunner implements CommandLineRunner {
                 .firstName("Abolfazl")
                 .lastName("Mohajer")
                 .email("abolfazlmohajer@gmail.com")
-                .password(passwordEncoder.encode("abolfazl1234"))
-                .role(Role.USER)
-                .active(true)
+                .password(passwordEncoder.encode("abolfazl12345"))
                 .build();
 
         userRepository.saveAll(List.of(user1, user2, user3, user4));

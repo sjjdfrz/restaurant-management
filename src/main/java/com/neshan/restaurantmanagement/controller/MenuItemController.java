@@ -4,28 +4,30 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.MenuItemDto;
 import com.neshan.restaurantmanagement.service.MenuItemService;
 import com.neshan.restaurantmanagement.util.AppConstants;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/menu-items")
+@RateLimiter(name = "rate-limit")
 @AllArgsConstructor
 public class MenuItemController {
 
     private MenuItemService menuItemService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<MenuItemDto>>> getAllMenuItems(
+    public ResponseEntity<ApiResponse<List<MenuItemDto>>> getAllMenuItems(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
     ) {
-        ApiResponse<Page<MenuItemDto>> menuItems = menuItemService.getAllMenuItems(pageNo, pageSize, sortBy, sortDir);
+        ApiResponse<List<MenuItemDto>> menuItems = menuItemService.getAllMenuItems(pageNo, pageSize, sortBy);
         return ResponseEntity.ok(menuItems);
     }
 
