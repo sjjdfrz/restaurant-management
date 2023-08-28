@@ -1,8 +1,13 @@
 package com.neshan.restaurantmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -12,29 +17,36 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "restaurant")
+@EntityListeners(AuditingEntityListener.class)
 public class Restaurant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "restaurant_sequence",
+            sequenceName = "restaurant_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(updatable = false)
     private long id;
 
     private String name;
     private long telephone;
     private String address;
 
-    @ManyToMany
-    @JoinTable(
-            name = "restaurant_menu",
-            joinColumns = @JoinColumn(name = "restaurant_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_id"))
+    @OneToMany
+    @JoinColumn(name = "restaurant_id")
     private List<Menu> menus;
 
-    @ManyToMany
-    @JoinTable(
-            name = "restaurant_order",
-            joinColumns = @JoinColumn(name = "restaurant_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @OneToMany
+    @JoinColumn(name = "restaurant_id")
     private List<Order> orders;
 
+    @CreatedDate
+    @JsonIgnore
+    private Date created_at;
 
+    @LastModifiedDate
+    @JsonIgnore
+    private Date modified_at;
 }

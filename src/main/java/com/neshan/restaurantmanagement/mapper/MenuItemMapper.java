@@ -8,9 +8,12 @@ import org.mapstruct.*;
 public interface MenuItemMapper {
 
     MenuItemDto menuItemToMenuItemDto(MenuItem menuItem);
+
     MenuItem menuItemDtoToMenuItem(MenuItemDto menuItemDto);
 
-    @Mapping(target = "id", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(
+            target = "id",
+            ignore = true,
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateMenuItemFromDto(MenuItemDto dto, @MappingTarget MenuItem entity);
 }

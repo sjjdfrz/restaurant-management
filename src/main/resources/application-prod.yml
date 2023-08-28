@@ -1,3 +1,8 @@
+server:
+  servlet:
+    context-path: /api/v1
+  port: 3000
+
 spring:
   datasource:
     url: ${DATABASE_URL}
@@ -15,7 +20,5 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-server:
-  servlet:
-    context-path: /api/v1
-  port: 3000
+
+

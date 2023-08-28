@@ -8,9 +8,12 @@ import org.mapstruct.*;
 public interface OrderMapper {
 
     OrderDto orderToOrderDto(Order order);
+
     Order orderDtoToOrder(OrderDto orderDto);
 
-    @Mapping(target = "id", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(
+            target = "id",
+            ignore = true,
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateOrderFromDto(OrderDto dto, @MappingTarget Order entity);
 }

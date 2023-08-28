@@ -1,9 +1,10 @@
 package com.neshan.restaurantmanagement.controller;
 
-
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.UserDto;
 import com.neshan.restaurantmanagement.service.UserService;
+import com.neshan.restaurantmanagement.util.AppConstants;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,50 +14,33 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RateLimiter(name = "rate-limit")
 @AllArgsConstructor
 public class UserController {
 
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
-
-        List<UserDto> users = userService.getAllUsers();
-
-        ApiResponse<List<UserDto>> apiResponse = ApiResponse
-                .<List<UserDto>>builder()
-                .status("success")
-                .data(users)
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
+    ) {
+        ApiResponse<List<UserDto>> users = userService.getAllUsers(pageNo, pageSize, sortBy);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable long id) {
 
-        UserDto userDto = userService.getUserById(id);
-
-        ApiResponse<UserDto> apiResponse = ApiResponse
-                .<UserDto>builder()
-                .status("success")
-                .data(userDto)
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+        ApiResponse<UserDto> userDto = userService.getUserById(id);
+        return ResponseEntity.ok(userDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<Object>> deleteUser(@PathVariable long id) {
 
-        userService.deleteUser(id);
-
-        ApiResponse<String> apiResponse = ApiResponse
-                .<String>builder()
-                .status("success")
-                .message("User was deleted successfully.")
-                .build();
-
-        return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
+        ApiResponse<Object> response = userService.deleteUser(id);
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 }

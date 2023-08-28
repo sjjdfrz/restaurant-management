@@ -8,10 +8,13 @@ import org.mapstruct.*;
 public interface RestaurantMapper {
 
     RestaurantDto restaurantToRestaurantDto(Restaurant restaurant);
+
     Restaurant restaurantDtoToRestaurant(RestaurantDto restaurantDto);
 
-    @Mapping(target = "id", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(
+            target = "id",
+            ignore = true,
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateRestaurantFromDto(RestaurantDto dto, @MappingTarget Restaurant entity);
 }
 
