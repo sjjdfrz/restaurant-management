@@ -158,6 +158,10 @@ public class OrderService {
         return getItemStatsDtos(rawResult);
     }
 
+    public List<Order> getOrdersBetween(Date from, Date to) {
+        return orderRepository.findByCreated_atBetween(from, to);
+    }
+
     private List<ItemStatsDto> getItemStatsDtos(List<Object[]> rawResult) {
         List<ItemStatsDto> topItems = new ArrayList<>();
 

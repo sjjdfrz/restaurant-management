@@ -3,7 +3,6 @@ package com.neshan.restaurantmanagement.controller;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.CartDto;
 import com.neshan.restaurantmanagement.model.dto.CartRequestDto;
-import com.neshan.restaurantmanagement.model.entity.Cart;
 import com.neshan.restaurantmanagement.service.CartService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;

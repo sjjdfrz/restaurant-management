@@ -44,7 +44,7 @@ public class AppConstants {
             "/categories/**",
             "/items/**",
             "/sales-stats/**",
-            "/top-items",
+            "/top-items/**",
     };
 
     public static final String[] POST_ADMIN_SECURED_URLs = {

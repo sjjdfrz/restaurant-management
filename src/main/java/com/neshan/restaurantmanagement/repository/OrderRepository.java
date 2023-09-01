@@ -63,4 +63,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Object[]> getTopItemsOfLastDays(
             @Param("daysAgo") Date daysAgo,
             @Param("current") Date current);
+
+    List<Order> findByCreated_atBetween(
+            @Param("from") Date from,
+            @Param("to") Date to
+    );
+
 }

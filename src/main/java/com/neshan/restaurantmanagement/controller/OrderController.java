@@ -4,6 +4,7 @@ import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
 import com.neshan.restaurantmanagement.model.dto.SalesStatsDto;
+import com.neshan.restaurantmanagement.model.entity.Order;
 import com.neshan.restaurantmanagement.service.OrderService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -215,5 +216,20 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/orders")
+    public ResponseEntity<ApiResponse<List<Order>>> getOrdersBetween(
+            @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+            @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to
+    ) {
 
+        List<Order> topItems = orderService.getOrdersBetween(from, to);
+
+        ApiResponse<List<Order>> response = ApiResponse
+                .<List<Order>>builder()
+                .status("success")
+                .data(topItems)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 }
