@@ -1,12 +1,14 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,9 +18,11 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "menu")
+@Table(name = "categories")
+@SQLDelete(sql = "UPDATE categories SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 @EntityListeners(AuditingEntityListener.class)
-public class Menu {
+public class Category {
 
     @Id
     @SequenceGenerator(
@@ -31,20 +35,24 @@ public class Menu {
     private long id;
 
     private String title;
-    private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "menu_menuitem",
-            joinColumns = @JoinColumn(name = "menu_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_item_id"))
-    List<MenuItem> menuItems;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    List<Item> items;
+
+    @Builder.Default
+    private boolean deleted = false;
 
     @CreatedDate
-    @JsonIgnore
     private Date created_at;
 
     @LastModifiedDate
-    @JsonIgnore
     private Date modified_at;
+
+    public void addMenuItem(Item item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        items.add(item);
+    }
 }

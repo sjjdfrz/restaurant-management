@@ -1,12 +1,14 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +18,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "restaurant")
+@Table(name = "restaurants")
+@SQLDelete(sql = "UPDATE restaurants SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 @EntityListeners(AuditingEntityListener.class)
 public class Restaurant {
 
@@ -34,19 +38,23 @@ public class Restaurant {
     private long telephone;
     private String address;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "restaurant_id")
-    private List<Menu> menus;
+    private List<Category> categories;
 
-    @OneToMany
-    @JoinColumn(name = "restaurant_id")
-    private List<Order> orders;
+    @Builder.Default
+    private boolean deleted = false;
 
     @CreatedDate
-    @JsonIgnore
     private Date created_at;
 
     @LastModifiedDate
-    @JsonIgnore
     private Date modified_at;
+
+    public void addCategory(Category category) {
+        if (categories == null) {
+            categories = new ArrayList<>();
+        }
+        categories.add(category);
+    }
 }

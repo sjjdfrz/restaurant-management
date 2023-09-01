@@ -32,6 +32,14 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, AppConstants.POST_UN_SECURED_URLs)
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, AppConstants.GET_USER_SECURED_URLs)
+                        .hasAuthority("USER")
+                        .requestMatchers(HttpMethod.POST, AppConstants.POST_USER_SECURED_URLs)
+                        .hasAuthority("USER")
+                        .requestMatchers(HttpMethod.PATCH, AppConstants.PATCH_USER_SECURED_URLs)
+                        .hasAuthority("USER")
+                        .requestMatchers(HttpMethod.DELETE, AppConstants.DELETE_USER_SECURED_URLs)
+                        .hasAuthority("USER")
                         .requestMatchers(HttpMethod.GET, AppConstants.GET_ADMIN_SECURED_URLs)
                         .hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, AppConstants.POST_ADMIN_SECURED_URLs)
@@ -45,7 +53,6 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
