@@ -1,7 +1,7 @@
 package com.neshan.restaurantmanagement.runner;
 
-import com.neshan.restaurantmanagement.model.entity.MenuItem;
-import com.neshan.restaurantmanagement.repository.MenuItemRepository;
+import com.neshan.restaurantmanagement.model.entity.Item;
+import com.neshan.restaurantmanagement.repository.ItemRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -10,196 +10,174 @@ import java.util.List;
 
 @AllArgsConstructor
 @Component
-public class MenuItemRunner implements CommandLineRunner {
+public class ItemRunner implements CommandLineRunner {
 
-    private MenuItemRepository menuItemRepository;
+    private ItemRepository itemRepository;
 
     @Override
     public void run(String... args) {
 
-        MenuItem menuItem1 = MenuItem
+        Item item1 = Item
                 .builder()
                 .name("پیتزا مخصوص")
                 .price(157500)
-                .category("پیتزا")
                 .description("سس گوجه، ژامبون گوشت و مرغ، رست بیف، قارچ، پنیر پروسس، فلفل دلمه، ذرت، زیتون، سس ۲ عدد رایگان")
                 .build();
 
-        MenuItem menuItem2 = MenuItem
+        Item item2 = Item
                 .builder()
                 .name("پیتزا چیکن آلفردو")
                 .price(162000)
-                .category("پیتزا")
                 .description("سس آلفردو، فیله مرغ گریل، قارچ، پنیر گودا، پنیر پروسس، فلفل دلمه، ذرت، زیتونسس ۲ عدد رایگان")
                 .build();
 
-        MenuItem menuItem3 = MenuItem
+        Item item3 = Item
                 .builder()
                 .name("برگر ذغالی")
                 .price(99000)
-                .category("برگر")
                 .description("برگر دستی ۹۰% ۱۵۰ گرم، سس باربیکیو، گوجه، کاهو، خیارشور، نان گرد، سس ۲ عدد رایگان")
                 .build();
 
-        MenuItem menuItem4 = MenuItem
+        Item item4 = Item
                 .builder()
                 .name("چیز برگر")
                 .price(117000)
-                .category("برگر")
                 .description("برگر دستی ۹۰% ۱۵۰ گرم، پنیر گودا، پنیر پروسس، گوجه، کاهو، خیارشور، نان گرد سس ۲ عدد رایگان")
                 .build();
 
-        MenuItem menuItem5 = MenuItem
+        Item item5 = Item
                 .builder()
                 .name("پاستا چیکن آلفردو")
                 .price(179000)
-                .category("پاستا")
                 .description("پاستا پنه، سس آلفردو")
                 .build();
 
-        MenuItem menuItem6 = MenuItem
+        Item item6 = Item
                 .builder()
                 .name("سینی دورهمی ویژه")
                 .price(1020000)
-                .category("سینی")
                 .description("۴۰۰ گرم گوشت گوسفندی، یک سیخ کباب لقمه ۱۵۰ گرمی، ۴۰۰ تا ۴۵۰ گرم جوجه کباب با استخوان (ران)، ۴۰۰ گرم ماهی قزل آلا سرخ شده، ۲۵۰ تا ۳۰۰ گرم خورشت قورمه سبزی، ۲.۵ پرس برنج ایرانی ۳۵۰ گرمی، دورچین: سیب زمینی سرخ کرده، لیمو، کلم قرمز، هویج، خیارشور")
                 .build();
 
-        MenuItem menuItem7 = MenuItem
+        Item item7 = Item
                 .builder()
                 .name("چلو کباب سلطانی")
                 .price(440000)
-                .category("چلو کباب")
                 .description("ک سیخ کباب برگ گوشت راسته گوسفندی ۱۸۰ گرمی، یک سیخ کباب لقمه مخلوط گوشت گوساله و گوسفندی ۱۵۰ گرمی، ۳۵۰ گرم برنج ایرانی، دورچین: کره، لیمو، کلم قرمز، هویج، خیارشور")
                 .build();
 
-        MenuItem menuItem8 = MenuItem
+        Item item8 = Item
                 .builder()
                 .name("چلو کباب کوبیده")
                 .price(235000)
-                .category("چلو کباب")
                 .description("۲ سیخ کباب کوبیده مخلوط گوشت گوساله و گوسفندی ۲۰۰ گرمی، ۳۵۰ گرم برنج ایرانی، دورچین: کره، لیمو، کلم قرمز، هویج، خیارشور")
                 .build();
 
-        MenuItem menuItem9 = MenuItem
+        Item item9 = Item
                 .builder()
                 .name("چلو ماهیچه مخصوص")
                 .price(510000)
-                .category("غذای ایرانی")
                 .description("۵۵۰ گرم ماهیچه گوسفندی، ۳۵۰ گرم برنج ایرانی، دورچین: پیاز سرخ کرده، سیر، فلفل دلمه ای، خیارشور، کره")
                 .build();
 
-        MenuItem menuItem10 = MenuItem
+        Item item10 = Item
                 .builder()
                 .name("چلو ماهی قزل آلا کبابی")
                 .price(275000)
-                .category("غذای ایرانی")
                 .description("۳۰۰ گرم ماهی قزل آلا کبابی، ۳۵۰ گرم برنج ایرانی، دورچین: لیمو، خیارشور")
                 .build();
 
-        MenuItem menuItem11 = MenuItem
+        Item item11 = Item
                 .builder()
                 .name("چلو خورشت قورمه سبزی")
                 .price(140000)
-                .category("خورشت")
                 .description("۲۵۰ تا ۳۰۰ گرم خورشت قورمه سبزی، ۳۰ گرم گوشت گوسفندی، ۳۵۰ گرم برنج ایرانی")
                 .build();
 
-        MenuItem menuItem12 = MenuItem
+        Item item12 = Item
                 .builder()
                 .name("ماست خامه ای موسیر")
                 .price(10000)
-                .category("پیش غذا")
                 .description("یک نفره")
                 .build();
 
-        MenuItem menuItem13 = MenuItem
+        Item item13 = Item
                 .builder()
                 .name("ماست ساده")
                 .price(4000)
-                .category("پیش غذا")
                 .description("یک نفره")
                 .build();
 
-        MenuItem menuItem14 = MenuItem
+        Item item14 = Item
                 .builder()
                 .name("خیارشور")
                 .price(15000)
-                .category("پیش غذا")
                 .description("یک نفره")
                 .build();
 
-        MenuItem menuItem15 = MenuItem
+        Item item15 = Item
                 .builder()
                 .name("زیتون پرورده")
                 .price(16000)
-                .category("پیش غذا")
                 .description("یک نفره")
                 .build();
 
-        MenuItem menuItem16 = MenuItem
+        Item item16 = Item
                 .builder()
                 .name("سیب زمینی سرخ کرده")
                 .price(35000)
-                .category("پیش غذا")
                 .description("یک نفره، سیب زمینی سرخ کرده خلالی")
                 .build();
 
-        MenuItem menuItem17 = MenuItem
+        Item item17 = Item
                 .builder()
                 .name("سالاد فصل")
                 .price(15000)
-                .category("پیش غذا")
                 .description("کاهو، خیار، گوجه، کلم قرمز، سس مایونز")
                 .build();
 
-        MenuItem menuItem18 = MenuItem
+        Item item18 = Item
                 .builder()
                 .name("نوشابه بطری کوکا کولا")
                 .price(11000)
-                .category("نوشیدنی")
                 .description("۳۰۰ میلی لیتر")
                 .build();
 
-        MenuItem menuItem19 = MenuItem
+        Item item19 = Item
                 .builder()
                 .name("نوشابه بطری فانتا")
                 .price(11000)
-                .category("نوشیدنی")
                 .description("۳۰۰ میلی لیتر")
                 .build();
 
-        MenuItem menuItem20 = MenuItem
+        Item item20 = Item
                 .builder()
                 .name("نوشابه خانواده کوکا کولا")
                 .price(29500)
-                .category("نوشیدنی")
                 .description("۱.۵ لیتر")
                 .build();
 
-        MenuItem menuItem21 = MenuItem
+        Item item21 = Item
                 .builder()
                 .name("دوغ بطری خوشگوار")
                 .price(10000)
-                .category("نوشیدنی")
                 .description("۳۰۰ میلی لیتر")
                 .build();
 
-        MenuItem menuItem22 = MenuItem
+        Item item22 = Item
                 .builder()
                 .name("آب معدنی کوچک")
                 .price(5000)
-                .category("نوشیدنی")
                 .description("۰.۵ لیتر")
                 .build();
 
-        menuItemRepository.saveAll(List.of(
-                menuItem1, menuItem2, menuItem3,
-                menuItem4, menuItem5, menuItem6,
-                menuItem7, menuItem8, menuItem9,
-                menuItem10, menuItem11, menuItem12,
-                menuItem13, menuItem14, menuItem15,
-                menuItem16, menuItem17, menuItem18,
-                menuItem19, menuItem20, menuItem21, menuItem22));
+        itemRepository.saveAll(List.of(
+                item1, item2, item3,
+                item4, item5, item6,
+                item7, item8, item9,
+                item10, item11, item12,
+                item13, item14, item15,
+                item16, item17, item18,
+                item19, item20, item21, item22));
     }
 }

@@ -1,6 +1,6 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.neshan.restaurantmanagement.model.OrderStatus;
+import com.neshan.restaurantmanagement.model.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -9,48 +9,45 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "orders")
-@SQLDelete(sql = "UPDATE orders SET deleted = true WHERE id=?")
+@Builder
+@Table(name = "items")
+@SQLDelete(sql = "UPDATE items SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Item {
 
     @Id
     @SequenceGenerator(
-            name = "order_sequence",
-            sequenceName = "order_sequence",
+            name = "item_sequence",
+            sequenceName = "item_sequence",
             allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(updatable = false)
     private long id;
 
-    private double totalCost;
+    private String name;
 
-    @Enumerated(EnumType.STRING)
-    OrderStatus orderStatus;
+    @Setter(AccessLevel.NONE)
+    private int price;
 
-    String deliveryTime;
+    private String description;
+
+    @Enumerated(value = EnumType.STRING)
+    @Builder.Default
+    private ItemStatus itemStatus = ItemStatus.AVAILABLE;
+
+    private int discount;
 
     @Builder.Default
     private boolean deleted = false;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<CartItem> items;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @CreatedDate
     private Date created_at;
@@ -58,10 +55,11 @@ public class Order {
     @LastModifiedDate
     private Date modified_at;
 
-    public void addCartItem(CartItem cartItem) {
-        if (items == null) {
-            items = new ArrayList<>();
-        }
-        items.add(cartItem);
+    public void setPrice(int price) {
+
+        if (discount != 0)
+            this.price = price * ((100 - discount) / 100);
+        else
+            this.price = price;
     }
 }

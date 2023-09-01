@@ -1,15 +1,14 @@
 package com.neshan.restaurantmanagement.service;
 
-import com.neshan.restaurantmanagement.mapper.RestaurantMapper;
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
-import com.neshan.restaurantmanagement.model.ApiResponse;
-import com.neshan.restaurantmanagement.model.entity.Restaurant;
+import com.neshan.restaurantmanagement.mapper.RestaurantMapper;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
+import com.neshan.restaurantmanagement.model.entity.Restaurant;
 import com.neshan.restaurantmanagement.repository.RestaurantRepository;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,79 +20,53 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
     private RestaurantMapper restaurantMapper;
 
-    public ApiResponse<List<RestaurantDto>> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
+    public List<RestaurantDto> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
 
-        List<Order> orders = PaginationSorting.getOrders(sortBy);
+        List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
         Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        List<RestaurantDto> pagedResult = restaurantRepository
+        return restaurantRepository
                 .findAll(paging)
                 .map(restaurant -> restaurantMapper.restaurantToRestaurantDto(restaurant))
                 .getContent();
-
-        return ApiResponse
-                .<List<RestaurantDto>>builder()
-                .status("success")
-                .data(pagedResult)
-                .build();
     }
 
-    public ApiResponse<RestaurantDto> getRestaurantById(long id) {
+    public RestaurantDto getRestaurant(long id) {
 
         Restaurant restaurant = restaurantRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The restaurant with ID %d was not found.", id)));
 
-        RestaurantDto restaurantDto = restaurantMapper.restaurantToRestaurantDto(restaurant);
-        return ApiResponse
-                .<RestaurantDto>builder()
-                .status("success")
-                .data(restaurantDto)
-                .build();
+        return restaurantMapper.restaurantToRestaurantDto(restaurant);
     }
 
-    public ApiResponse<Object> createRestaurant(RestaurantDto restaurantDto) {
+    public Restaurant getRestaurantEntityById(long id) {
+
+        return restaurantRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The restaurant with ID %d was not found.", id)));
+    }
+
+    public void createRestaurant(RestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantMapper.restaurantDtoToRestaurant(restaurantDto);
         restaurantRepository.save(restaurant);
-
-        return ApiResponse
-                .builder()
-                .status("success")
-                .message("Restaurant was created successfully.")
-                .build();
     }
 
-    public ApiResponse<Object> updateRestaurant(long id, RestaurantDto restaurantRequest) {
+    public void updateRestaurant(long id, RestaurantDto restaurantRequest) {
 
-        Restaurant restaurant = restaurantRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The restaurant with ID %d was not found.", id)));
+        Restaurant restaurant = getRestaurantEntityById(id);
 
         restaurantMapper.updateRestaurantFromDto(restaurantRequest, restaurant);
         restaurantRepository.save(restaurant);
-
-        return ApiResponse
-                .builder()
-                .status("success")
-                .message("Restaurant was updated successfully.")
-                .build();
     }
 
-    public ApiResponse<Object> deleteRestaurant(long id) {
+    public void deleteRestaurant(long id) {
+        restaurantRepository.deleteById(id);
+    }
 
-        Restaurant restaurant = restaurantRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The restaurant with ID %d was not found.", id)));
-
-        restaurantRepository.delete(restaurant);
-
-        return ApiResponse
-                .builder()
-                .status("success")
-                .message("Restaurant was deleted successfully.")
-                .build();
+    public void deleteAllRestaurants() {
+        restaurantRepository.deleteAll();
     }
 }
