@@ -2,10 +2,13 @@ package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.neshan.restaurantmanagement.model.ItemStatus;
+import com.neshan.restaurantmanagement.model.entity.Comment;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ItemDto(
@@ -24,5 +27,7 @@ public record ItemDto(
 
         String description,
         ItemStatus itemStatus
+
+//        List<CommentRequestDto> comments
 ) {
 }

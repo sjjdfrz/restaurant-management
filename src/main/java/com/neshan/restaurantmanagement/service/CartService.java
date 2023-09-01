@@ -30,6 +30,7 @@ public class CartService {
     private CartRepository cartRepository;
     private ItemRepository itemRepository;
 
+    @Transactional
     public List<CartDto> getAllCarts(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
@@ -41,6 +42,7 @@ public class CartService {
                 .getContent();
     }
 
+    @Transactional
     public CartDto getCart(long id) {
 
         Cart cart = cartRepository
@@ -51,6 +53,7 @@ public class CartService {
         return cartMapper.cartToCartDto(cart);
     }
 
+    @Transactional
     public List<CartDto> getAllCartsOfUser(HttpServletRequest request) {
 
         User user = (User) request.getAttribute("user");
@@ -61,6 +64,7 @@ public class CartService {
                 .toList();
     }
 
+    @Transactional
     public CartDto getCartOfUser(HttpServletRequest request, long id) {
 
         User user = (User) request.getAttribute("user");
@@ -94,6 +98,7 @@ public class CartService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void updateCart(long id, CartRequestDto cartRequestDto) {
 
         Cart cart = cartRepository
@@ -109,10 +114,12 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    @Transactional
     public void deleteCart(long id) {
         cartRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAllCarts(HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
         user.getCarts().clear();

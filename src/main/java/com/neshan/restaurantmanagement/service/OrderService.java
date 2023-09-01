@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -28,6 +29,7 @@ public class OrderService {
     private OrderMapper orderMapper;
     private UserRepository userRepository;
 
+    @Transactional
     public List<OrderDto> getAllOrders(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
@@ -39,6 +41,7 @@ public class OrderService {
                 .getContent();
     }
 
+    @Transactional
     public OrderDto getOrder(long id) {
 
         Order order = orderRepository
@@ -49,6 +52,7 @@ public class OrderService {
         return orderMapper.orderToOrderDto(order);
     }
 
+    @Transactional
     public List<OrderDto> getAllOrdersOfUser(HttpServletRequest request) {
 
         User user = (User) request.getAttribute("user");
@@ -60,6 +64,7 @@ public class OrderService {
                 .toList();
     }
 
+    @Transactional
     public OrderDto getOrderOfUser(HttpServletRequest request, long id) {
 
         User user = (User) request.getAttribute("user");
@@ -75,7 +80,7 @@ public class OrderService {
         return orderMapper.orderToOrderDto(userOrder);
     }
 
-
+    @Transactional
     public OrderDto createOrder(long cartId, HttpServletRequest request) {
 
         User user = (User) request.getAttribute("user");
@@ -108,6 +113,7 @@ public class OrderService {
         return orderMapper.orderToOrderDto(orderRepository.findLastByUserId(user.getId()));
     }
 
+    @Transactional
     public void updateOrder(long id, OrderDto orderRequest) {
 
         Order order = orderRepository
@@ -119,18 +125,22 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    @Transactional
     public void deleteOrder(long id) {
         orderRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAllOrders() {
         orderRepository.deleteAll();
     }
 
+    @Transactional
     public SalesStatsDto getSalesStats(Date from, Date to) {
         return orderRepository.getSalesStats(from, to);
     }
 
+    @Transactional
     public SalesStatsDto getSalesStatsOfLastDays(int days) {
 
         Calendar cal = Calendar.getInstance();
@@ -141,12 +151,14 @@ public class OrderService {
         return orderRepository.getSalesStatsOfLastDays(daysAgo, current);
     }
 
+    @Transactional
     public List<ItemStatsDto> getTopItems(Date from, Date to) {
 
         List<Object[]> rawResult = orderRepository.getTopItems(from, to);
         return getItemStatsDtos(rawResult);
     }
 
+    @Transactional
     public List<ItemStatsDto> getTopItemsOfLastDays(int days) {
 
         Calendar cal = Calendar.getInstance();
@@ -158,6 +170,7 @@ public class OrderService {
         return getItemStatsDtos(rawResult);
     }
 
+    @Transactional
     public List<Order> getOrdersBetween(Date from, Date to) {
         return orderRepository.findByCreated_atBetween(from, to);
     }

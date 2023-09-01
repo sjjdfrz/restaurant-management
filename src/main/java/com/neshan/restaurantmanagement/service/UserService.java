@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class UserService {
     private UserMapper userMapper;
     private PasswordEncoder passwordEncoder;
 
+    @Transactional
     public List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
@@ -36,6 +38,7 @@ public class UserService {
                 .getContent();
     }
 
+    @Transactional
     public UserDto getUser(long id) {
 
         User user = userRepository
@@ -46,6 +49,7 @@ public class UserService {
         return userMapper.userToUserDto(user);
     }
 
+    @Transactional
     public void deleteUser(long id) {
 
         User user = userRepository
@@ -56,7 +60,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
+    @Transactional
     public ApiResponse<Object> updateMe(
             RegisterRequest updateRequest,
             HttpServletRequest httpRequest) {
@@ -76,6 +80,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public ApiResponse<Object> deleteMe(HttpServletRequest httpRequest) {
 
         User user = (User) httpRequest.getAttribute("user");
@@ -89,6 +94,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public ApiResponse<UserDto> getMe(HttpServletRequest httpRequest) {
 
         User user = (User) httpRequest.getAttribute("user");

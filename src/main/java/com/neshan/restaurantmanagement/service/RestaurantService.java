@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
     private RestaurantMapper restaurantMapper;
 
+    @Transactional
     public List<RestaurantDto> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
@@ -31,6 +33,7 @@ public class RestaurantService {
                 .getContent();
     }
 
+    @Transactional
     public RestaurantDto getRestaurant(long id) {
 
         Restaurant restaurant = restaurantRepository
@@ -41,6 +44,7 @@ public class RestaurantService {
         return restaurantMapper.restaurantToRestaurantDto(restaurant);
     }
 
+    @Transactional
     public Restaurant getRestaurantEntityById(long id) {
 
         return restaurantRepository
@@ -49,11 +53,13 @@ public class RestaurantService {
                         String.format("The restaurant with ID %d was not found.", id)));
     }
 
+    @Transactional
     public void createRestaurant(RestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantMapper.restaurantDtoToRestaurant(restaurantDto);
         restaurantRepository.save(restaurant);
     }
 
+    @Transactional
     public void updateRestaurant(long id, RestaurantDto restaurantRequest) {
 
         Restaurant restaurant = getRestaurantEntityById(id);
@@ -62,10 +68,12 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
+    @Transactional
     public void deleteRestaurant(long id) {
         restaurantRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAllRestaurants() {
         restaurantRepository.deleteAll();
     }
