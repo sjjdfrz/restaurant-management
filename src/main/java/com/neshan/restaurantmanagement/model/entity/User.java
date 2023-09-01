@@ -74,7 +74,6 @@ public class User implements UserDetails {
         if (carts == null) {
             carts = new ArrayList<>();
         }
-
         carts.add(cart);
     }
 

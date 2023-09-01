@@ -19,7 +19,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 "/carts/{cartId}/orders",
                 "/update-me",
                 "/delete-me",
-                "/me"
+                "/me",
+                "/my-comments",
+                "/items/{itemId}/comments"
         );
     }
 }

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class ItemService {
     private ItemMapper itemMapper;
     private CategoryService categoryService;
 
+    @Transactional
     public List<ItemDto> getAllItems(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
@@ -35,6 +37,7 @@ public class ItemService {
                 .getContent();
     }
 
+    @Transactional
     public ItemDto getItem(long id) {
 
         Item item = itemRepository
@@ -45,6 +48,7 @@ public class ItemService {
         return itemMapper.itemToItemDto(item);
     }
 
+    @Transactional
     public List<ItemDto> getAllItemsOfCategory(long categoryId) {
 
         return categoryService
@@ -52,6 +56,7 @@ public class ItemService {
                 .items();
     }
 
+    @Transactional
     public void createItem(long categoryId, ItemDto itemDto) {
 
         Category category = categoryService.getCategoryEntityById(categoryId);
@@ -61,6 +66,7 @@ public class ItemService {
         categoryRepository.save(category);
     }
 
+    @Transactional
     public void updateItem(long id, ItemDto itemRequest) {
 
         Item item = itemRepository
@@ -72,14 +78,17 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    @Transactional
     public void deleteItem(long id) {
         itemRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAllItems() {
         itemRepository.deleteAll();
     }
 
+    @Transactional
     public void deleteAllItemsOfCategory(long categoryId) {
 
         Category category = categoryService.getCategoryEntityById(categoryId);

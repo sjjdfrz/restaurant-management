@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,10 +22,10 @@ public class CategoryService {
 
     private CategoryRepository categoryRepository;
     private CategoryMapper categoryMapper;
-
     private RestaurantService restaurantService;
     private RestaurantRepository restaurantRepository;
 
+    @Transactional
     public List<CategoryDto> getAllCategories(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
@@ -36,6 +37,7 @@ public class CategoryService {
                 .getContent();
     }
 
+    @Transactional
     public CategoryDto getCategory(long id) {
 
         Category category = categoryRepository
@@ -46,6 +48,7 @@ public class CategoryService {
         return categoryMapper.categoryToCategoryDto(category);
     }
 
+    @Transactional
     public Category getCategoryEntityById(long id) {
 
         return categoryRepository
@@ -54,12 +57,14 @@ public class CategoryService {
                         String.format("The category with ID %d was not found.", id)));
     }
 
+    @Transactional
     public List<CategoryDto> getAllCategoriesOfRestaurant(Long restaurantId) {
         return restaurantService
                 .getRestaurant(restaurantId)
                 .categories();
     }
 
+    @Transactional
     public void createCategory(long restaurantId, CategoryDto categoryDto) {
 
         Restaurant restaurant = restaurantService.getRestaurantEntityById(restaurantId);
@@ -69,6 +74,7 @@ public class CategoryService {
         restaurantRepository.save(restaurant);
     }
 
+    @Transactional
     public void updateCategory(long id, CategoryDto categoryRequest) {
 
         Category category = getCategoryEntityById(id);
@@ -77,14 +83,17 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    @Transactional
     public void deleteCategory(long id) {
         categoryRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteAllCategories() {
         categoryRepository.deleteAll();
     }
 
+    @Transactional
     public void deleteAllCategoriesOfRestaurant(long restaurantId) {
 
         Restaurant restaurant = restaurantService.getRestaurantEntityById(restaurantId);

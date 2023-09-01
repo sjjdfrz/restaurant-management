@@ -49,7 +49,7 @@ public class Category {
     @LastModifiedDate
     private Date modified_at;
 
-    public void addMenuItem(Item item) {
+    public void addItem(Item item) {
         if (items == null) {
             items = new ArrayList<>();
         }

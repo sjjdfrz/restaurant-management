@@ -9,7 +9,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -49,6 +51,10 @@ public class Item {
     @Builder.Default
     private boolean deleted = false;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn("item_id")
+    List<Comment> comments;
+
     @CreatedDate
     private Date created_at;
 
@@ -61,5 +67,12 @@ public class Item {
             this.price = price * ((100 - discount) / 100);
         else
             this.price = price;
+    }
+
+    public void addComment(Comment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
     }
 }
