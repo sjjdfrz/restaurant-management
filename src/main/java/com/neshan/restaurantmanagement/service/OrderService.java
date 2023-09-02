@@ -1,18 +1,25 @@
 package com.neshan.restaurantmanagement.service;
 
-import com.neshan.restaurantmanagement.mapper.OrderMapper;
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
-import com.neshan.restaurantmanagement.model.ApiResponse;
-import com.neshan.restaurantmanagement.model.entity.Order;
+import com.neshan.restaurantmanagement.mapper.OrderMapper;
+import com.neshan.restaurantmanagement.model.OrderStatus;
+import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
+import com.neshan.restaurantmanagement.model.dto.SalesStatsDto;
+import com.neshan.restaurantmanagement.model.entity.Cart;
+import com.neshan.restaurantmanagement.model.entity.Order;
+import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.repository.OrderRepository;
+import com.neshan.restaurantmanagement.repository.UserRepository;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -20,51 +27,94 @@ public class OrderService {
 
     private OrderRepository orderRepository;
     private OrderMapper orderMapper;
+    private UserRepository userRepository;
 
-    public ApiResponse<List<OrderDto>> getAllOrders(int pageNo, int pageSize, String sortBy) {
+    @Transactional
+    public List<OrderDto> getAllOrders(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
         Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
-        List<OrderDto> pagedResult = orderRepository
+        return orderRepository
                 .findAll(paging)
                 .map(order -> orderMapper.orderToOrderDto(order))
                 .getContent();
-
-        return ApiResponse
-                .<List<OrderDto>>builder()
-                .status("success")
-                .data(pagedResult)
-                .build();
     }
 
-    public ApiResponse<OrderDto> getOrderById(long id) {
+    @Transactional
+    public OrderDto getOrder(long id) {
 
         Order order = orderRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The order with ID %d was not found.", id)));
 
-        OrderDto orderDto = orderMapper.orderToOrderDto(order);
-        return ApiResponse
-                .<OrderDto>builder()
-                .status("success")
-                .data(orderDto)
-                .build();
+        return orderMapper.orderToOrderDto(order);
     }
 
-    public ApiResponse<Object> createOrder(OrderDto orderDto) {
-        Order order = orderMapper.orderDtoToOrder(orderDto);
-        orderRepository.save(order);
+    @Transactional
+    public List<OrderDto> getAllOrdersOfUser(HttpServletRequest request) {
 
-        return ApiResponse
+        User user = (User) request.getAttribute("user");
+
+        return user
+                .getOrders()
+                .stream()
+                .map(order -> orderMapper.orderToOrderDto(order))
+                .toList();
+    }
+
+    @Transactional
+    public OrderDto getOrderOfUser(HttpServletRequest request, long id) {
+
+        User user = (User) request.getAttribute("user");
+
+        Order userOrder = user
+                .getOrders()
+                .stream()
+                .filter(order -> order.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The order with ID %d was not found.", id)));
+
+        return orderMapper.orderToOrderDto(userOrder);
+    }
+
+    @Transactional
+    public OrderDto createOrder(long cartId, HttpServletRequest request) {
+
+        User user = (User) request.getAttribute("user");
+
+        Cart userCart = user
+                .getCarts()
+                .stream()
+                .filter(cart -> cart.getId() == cartId)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The cart with ID %d was not found.", cartId)));
+
+        Integer totalCost = userCart
+                .getCartItems()
+                .stream()
+                .map(item -> item.getQuantity() * item.getItem().getPrice())
+                .reduce(0, Integer::sum);
+
+        Order order = Order
                 .builder()
-                .status("success")
-                .message("Order was created successfully.")
+                .totalCost(totalCost)
+                .orderStatus(OrderStatus.PREPARING)
+                .user(user)
+                .deliveryTime((new Random().nextInt(31) + 30) + "دقیقه")
+                .items(userCart.getCartItems())
                 .build();
+
+        user.addOrder(order);
+        userRepository.save(user);
+        return orderMapper.orderToOrderDto(orderRepository.findLastByUserId(user.getId()));
     }
 
-    public ApiResponse<Object> updateOrder(long id, OrderDto orderRequest) {
+    @Transactional
+    public void updateOrder(long id, OrderDto orderRequest) {
 
         Order order = orderRepository
                 .findById(id)
@@ -73,27 +123,67 @@ public class OrderService {
 
         orderMapper.updateOrderFromDto(orderRequest, order);
         orderRepository.save(order);
-
-        return ApiResponse
-                .builder()
-                .status("success")
-                .message("Order was updated successfully.")
-                .build();
     }
 
-    public ApiResponse<Object> deleteOrder(long id) {
+    @Transactional
+    public void deleteOrder(long id) {
+        orderRepository.deleteById(id);
+    }
 
-        Order order = orderRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The order with ID %d was not found.", id)));
+    @Transactional
+    public void deleteAllOrders() {
+        orderRepository.deleteAll();
+    }
 
-        orderRepository.delete(order);
+    @Transactional
+    public SalesStatsDto getSalesStats(Date from, Date to) {
+        return orderRepository.getSalesStats(from, to);
+    }
 
-        return ApiResponse
-                .builder()
-                .status("success")
-                .message("Order was deleted successfully.")
-                .build();
+    @Transactional
+    public SalesStatsDto getSalesStatsOfLastDays(int days) {
+
+        Calendar cal = Calendar.getInstance();
+        Date current = cal.getTime();
+        cal.add(Calendar.DATE, -days);
+        Date daysAgo = cal.getTime();
+
+        return orderRepository.getSalesStatsOfLastDays(daysAgo, current);
+    }
+
+    @Transactional
+    public List<ItemStatsDto> getTopItems(Date from, Date to) {
+
+        List<Object[]> rawResult = orderRepository.getTopItems(from, to);
+        return getItemStatsDtos(rawResult);
+    }
+
+    @Transactional
+    public List<ItemStatsDto> getTopItemsOfLastDays(int days) {
+
+        Calendar cal = Calendar.getInstance();
+        Date current = cal.getTime();
+        cal.add(Calendar.DATE, -days);
+        Date daysAgo = cal.getTime();
+
+        List<Object[]> rawResult = orderRepository.getTopItemsOfLastDays(daysAgo, current);
+        return getItemStatsDtos(rawResult);
+    }
+
+    @Transactional
+    public List<Order> getOrdersBetween(Date from, Date to) {
+        return orderRepository.findByCreatedAtBetween(from, to);
+    }
+
+    private List<ItemStatsDto> getItemStatsDtos(List<Object[]> rawResult) {
+        List<ItemStatsDto> topItems = new ArrayList<>();
+
+        for (Object[] row : rawResult) {
+            String itemName = (String) row[0];
+            int quantity = (int) row[1];
+            ItemStatsDto itemStatsDto = new ItemStatsDto(itemName, quantity);
+            topItems.add(itemStatsDto);
+        }
+        return topItems;
     }
 }

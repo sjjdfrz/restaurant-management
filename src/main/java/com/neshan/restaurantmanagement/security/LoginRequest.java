@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Builder
-public record AuthenticationRequest(
+public record LoginRequest(
 
         @NotBlank(message = "Invalid Email: Empty email!")
         @Email

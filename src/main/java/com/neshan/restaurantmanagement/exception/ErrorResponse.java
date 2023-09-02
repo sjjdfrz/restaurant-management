@@ -19,7 +19,8 @@ public class ErrorResponse {
     private final long timestamp;
     private List<ValidationError> validationErrors;
 
-    private record ValidationError(String field, String message) {}
+    private record ValidationError(String field, String message) {
+    }
 
     public void addValidationError(String field, String message) {
         if (Objects.isNull(validationErrors)) {

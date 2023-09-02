@@ -1,11 +1,8 @@
 package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.neshan.restaurantmanagement.model.entity.Order;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserDto(
@@ -20,8 +17,6 @@ public record UserDto(
 
         @NotBlank(message = "Invalid Email: Empty email!")
         @Email
-        String email,
-
-        List<Order> orders
+        String email
 ) {
 }

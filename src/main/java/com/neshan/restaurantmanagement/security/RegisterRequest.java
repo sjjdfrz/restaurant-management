@@ -3,6 +3,7 @@ package com.neshan.restaurantmanagement.security;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Builder
@@ -18,7 +19,7 @@ public record RegisterRequest(
         @Email
         String email,
 
-        @NotBlank(message = "Invalid Password: Empty password!")
+        @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
         String password,
 
         @NotBlank(message = "Invalid ConfirmPassword: Empty confirmPassword!")

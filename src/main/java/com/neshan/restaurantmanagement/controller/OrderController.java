@@ -1,61 +1,235 @@
 package com.neshan.restaurantmanagement.controller;
 
 import com.neshan.restaurantmanagement.model.ApiResponse;
+import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
+import com.neshan.restaurantmanagement.model.dto.SalesStatsDto;
+import com.neshan.restaurantmanagement.model.entity.Order;
 import com.neshan.restaurantmanagement.service.OrderService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
 @RateLimiter(name = "rate-limit")
 @AllArgsConstructor
 public class OrderController {
 
     private OrderService orderService;
 
-    @GetMapping
+    @GetMapping("/orders")
     public ResponseEntity<ApiResponse<List<OrderDto>>> getAllOrders(
-            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
+            @RequestParam(
+                    value = "page",
+                    defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(
+                    value = "size",
+                    defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(
+                    value = "sort",
+                    defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy
     ) {
-        ApiResponse<List<OrderDto>> orders = orderService.getAllOrders(pageNo, pageSize, sortBy);
-        return ResponseEntity.ok(orders);
-    }
+        var orders = orderService.getAllOrders(pageNo, pageSize, sortBy);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<OrderDto>> getOrderById(@PathVariable long id) {
+        var response = ApiResponse
+                .<List<OrderDto>>builder()
+                .status("success")
+                .data(orders)
+                .build();
 
-        ApiResponse<OrderDto> orderDto = orderService.getOrderById(id);
-        return ResponseEntity.ok(orderDto);
-    }
-
-    @PostMapping
-    public ResponseEntity<ApiResponse<Object>> createOrder(@Valid @RequestBody OrderDto orderDto) {
-
-        ApiResponse<Object> response = orderService.createOrder(orderDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> updateOrder(@PathVariable long id, @Valid @RequestBody OrderDto orderDto) {
-
-        ApiResponse<Object> response = orderService.updateOrder(id, orderDto);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<ApiResponse<OrderDto>> getOrder(@PathVariable long id) {
+
+        var order = orderService.getOrder(id);
+
+        var response = ApiResponse
+                .<OrderDto>builder()
+                .status("success")
+                .data(order)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/my-orders")
+    public ResponseEntity<ApiResponse<List<OrderDto>>> getAllOrdersOfUser(
+            HttpServletRequest request) {
+
+        var orders = orderService.getAllOrdersOfUser(request);
+
+        var response = ApiResponse
+                .<List<OrderDto>>builder()
+                .status("success")
+                .data(orders)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/my-orders/{id}")
+    public ResponseEntity<ApiResponse<OrderDto>> getOrderOfUser(
+            HttpServletRequest request,
+            @PathVariable long id) {
+
+        var order = orderService.getOrderOfUser(request, id);
+
+        var response = ApiResponse
+                .<OrderDto>builder()
+                .status("success")
+                .data(order)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/carts/{cartId}/orders")
+    public ResponseEntity<ApiResponse<OrderDto>> createOrder(
+            @PathVariable long cartId,
+            HttpServletRequest request) {
+
+        var order = orderService.createOrder(cartId, request);
+
+        var response = ApiResponse
+                .<OrderDto>builder()
+                .status("success")
+                .message("Order was created successfully.")
+                .data(order)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/orders/{id}")
+    public ResponseEntity<ApiResponse<Object>> updateOrder(
+            @PathVariable long id,
+            @RequestBody OrderDto orderDto) {
+
+        orderService.updateOrder(id, orderDto);
+
+        var response = ApiResponse
+                .builder()
+                .status("success")
+                .message("Order was updated successfully.")
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/orders/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteOrder(@PathVariable long id) {
 
-        ApiResponse<Object> response = orderService.deleteOrder(id);
+        orderService.deleteOrder(id);
+
+        var response = ApiResponse
+                .builder()
+                .status("success")
+                .message("Order was deleted successfully.")
+                .build();
+
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/orders")
+    public ResponseEntity<ApiResponse<Object>> deleteAllOrders() {
+        orderService.deleteAllOrders();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/sales-stats/")
+    public ResponseEntity<ApiResponse<SalesStatsDto>> getSalesStats(
+
+            @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+            @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to
+    ) {
+
+        SalesStatsDto salesStats = orderService.getSalesStats(from, to);
+
+        var response = ApiResponse
+                .<SalesStatsDto>builder()
+                .status("success")
+                .data(salesStats)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/sales-stats/{days}")
+    public ResponseEntity<ApiResponse<SalesStatsDto>> getSalesStatsOfLastDays(
+            @PathVariable int days
+    ) {
+
+        var salesStats = orderService.getSalesStatsOfLastDays(days);
+
+        var response = ApiResponse
+                .<SalesStatsDto>builder()
+                .status("success")
+                .data(salesStats)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/top-items/")
+    public ResponseEntity<ApiResponse<List<ItemStatsDto>>> getTopItems(
+            @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+            @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to
+    ) {
+
+        var topItems = orderService.getTopItems(from, to);
+
+        var response = ApiResponse
+                .<List<ItemStatsDto>>builder()
+                .status("success")
+                .data(topItems)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/top-items/{days}")
+    public ResponseEntity<ApiResponse<List<ItemStatsDto>>> getTopItemsOfLastDays(
+            @PathVariable int days
+    ) {
+
+        var topItems = orderService.getTopItemsOfLastDays(days);
+
+        var response = ApiResponse
+                .<List<ItemStatsDto>>builder()
+                .status("success")
+                .data(topItems)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/order-history/")
+    public ResponseEntity<ApiResponse<List<Order>>> getOrdersBetween(
+            @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+            @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to
+    ) {
+
+        var topItems = orderService.getOrdersBetween(from, to);
+
+        var response = ApiResponse
+                .<List<Order>>builder()
+                .status("success")
+                .data(topItems)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

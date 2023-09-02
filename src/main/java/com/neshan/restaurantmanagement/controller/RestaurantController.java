@@ -23,44 +23,95 @@ public class RestaurantController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<RestaurantDto>>> getAllRestaurants(
-            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
-
+            @RequestParam(
+                    value = "page",
+                    defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(
+                    value = "size",
+                    defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(
+                    value = "sort",
+                    defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy
     ) {
-        ApiResponse<List<RestaurantDto>> restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy);
-        return ResponseEntity.ok(restaurants);
+
+        var restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy);
+
+        var response = ApiResponse
+                .<List<RestaurantDto>>builder()
+                .status("success")
+                .data(restaurants)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<RestaurantDto>> getRestaurantById(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<RestaurantDto>> getRestaurant(
+            @PathVariable long id) {
 
-        ApiResponse<RestaurantDto> restaurantDto = restaurantService.getRestaurantById(id);
-        return ResponseEntity.ok(restaurantDto);
+        var restaurant = restaurantService.getRestaurant(id);
+
+        var response = ApiResponse
+                .<RestaurantDto>builder()
+                .status("success")
+                .data(restaurant)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> createRestaurant(@Valid @RequestBody RestaurantDto restaurantDto) {
+    public ResponseEntity<ApiResponse<Object>> createRestaurant(
+            @Valid @RequestBody RestaurantDto restaurantDto) {
 
-        ApiResponse<Object> response = restaurantService.createRestaurant(restaurantDto);
+        restaurantService.createRestaurant(restaurantDto);
+
+        var response = ApiResponse
+                .builder()
+                .status("success")
+                .message("Restaurant was created successfully.")
+                .build();
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> updateRestaurant(@PathVariable long id, @Valid @RequestBody RestaurantDto restaurantDto) {
+    public ResponseEntity<ApiResponse<Object>> updateRestaurant
+            (@PathVariable long id,
+             @RequestBody RestaurantDto restaurantDto) {
 
-        ApiResponse<Object> response = restaurantService.updateRestaurant(id, restaurantDto);
+        restaurantService.updateRestaurant(id, restaurantDto);
+
+        var response = ApiResponse
+                .builder()
+                .status("success")
+                .message("Restaurant was updated successfully.")
+                .build();
+
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> deleteRestaurant(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<Object>> deleteRestaurant(
+            @PathVariable long id) {
 
-        ApiResponse<Object> response = restaurantService.deleteRestaurant(id);
+        restaurantService.deleteRestaurant(id);
+
+        var response = ApiResponse
+                .builder()
+                .status("success")
+                .message("Restaurant was deleted successfully.")
+                .build();
+
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
-//    private void fallbackMethod(RequestNotPermitted requestNotPermitted) {
-//        throw requestNotPermitted;
-//    }
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Object>> deleteAllRestaurants() {
+        restaurantService.deleteAllRestaurants();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

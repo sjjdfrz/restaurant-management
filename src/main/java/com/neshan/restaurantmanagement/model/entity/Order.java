@@ -1,12 +1,15 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.neshan.restaurantmanagement.model.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders")
+@SQLDelete(sql = "UPDATE orders SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
 
@@ -32,19 +37,31 @@ public class Order {
 
     private double totalCost;
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
-    private List<OrderItem> orderItems;
+    @Enumerated(EnumType.STRING)
+    OrderStatus orderStatus;
+
+    String deliveryTime;
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<CartItem> items;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @CreatedDate
-    @JsonIgnore
-    private Date created_at;
+    private Date createdAt;
 
     @LastModifiedDate
-    @JsonIgnore
     private Date modified_at;
+
+    public void addCartItem(CartItem cartItem) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        items.add(cartItem);
+    }
 }
