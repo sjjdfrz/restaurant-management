@@ -8,7 +8,8 @@ public class AppConstants {
     public static final String[] GET_UN_SECURED_URLs = {
             "/restaurants/**",
             "/restaurants/{restaurantId}/categories",
-            "/categories/{categoryId}/items"
+            "/categories/{categoryId}/items",
+            "/items/{itemId}/comments"
     };
 
     public static final String[] POST_UN_SECURED_URLs = {
@@ -19,12 +20,14 @@ public class AppConstants {
     public static final String[] GET_USER_SECURED_URLs = {
             "/my-carts/**",
             "/my-orders/**",
+            "/my-comments",
             "/me"
     };
 
     public static final String[] POST_USER_SECURED_URLs = {
             "/my-carts",
-            "/carts/{cartId}/orders"
+            "/carts/{cartId}/orders",
+            "/items/{itemId}/comments"
     };
 
     public static final String[] PATCH_USER_SECURED_URLs = {
@@ -45,6 +48,8 @@ public class AppConstants {
             "/items/**",
             "/sales-stats/**",
             "/top-items/**",
+            "/order-history/**",
+            "/comments/**",
     };
 
     public static final String[] POST_ADMIN_SECURED_URLs = {
@@ -58,7 +63,8 @@ public class AppConstants {
             "/orders/**",
             "/restaurants/**",
             "/categories/**",
-            "/items/**"
+            "/items/**",
+            "/comments/**"
 
     };
 
@@ -69,6 +75,7 @@ public class AppConstants {
             "/categories/**",
             "/restaurants/{restaurantId}/categories",
             "/categories/{categoryId}/items",
-            "/items/**"
+            "/items/**",
+            "/comments/**"
     };
 }

@@ -1,7 +1,6 @@
 package com.neshan.restaurantmanagement.exception;
 
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

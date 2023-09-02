@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 
 public record CommentRequestDto(
 
+        long id,
+
         @NotBlank
         String body,
 

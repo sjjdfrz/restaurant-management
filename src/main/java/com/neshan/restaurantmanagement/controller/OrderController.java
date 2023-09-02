@@ -40,9 +40,9 @@ public class OrderController {
                     defaultValue = AppConstants.DEFAULT_SORT_BY,
                     required = false) String sortBy
     ) {
-        List<OrderDto> orders = orderService.getAllOrders(pageNo, pageSize, sortBy);
+        var orders = orderService.getAllOrders(pageNo, pageSize, sortBy);
 
-        ApiResponse<List<OrderDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<OrderDto>>builder()
                 .status("success")
                 .data(orders)
@@ -54,12 +54,12 @@ public class OrderController {
     @GetMapping("/orders/{id}")
     public ResponseEntity<ApiResponse<OrderDto>> getOrder(@PathVariable long id) {
 
-        OrderDto orderDto = orderService.getOrder(id);
+        var order = orderService.getOrder(id);
 
-        ApiResponse<OrderDto> response = ApiResponse
+        var response = ApiResponse
                 .<OrderDto>builder()
                 .status("success")
-                .data(orderDto)
+                .data(order)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -69,9 +69,9 @@ public class OrderController {
     public ResponseEntity<ApiResponse<List<OrderDto>>> getAllOrdersOfUser(
             HttpServletRequest request) {
 
-        List<OrderDto> orders = orderService.getAllOrdersOfUser(request);
+        var orders = orderService.getAllOrdersOfUser(request);
 
-        ApiResponse<List<OrderDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<OrderDto>>builder()
                 .status("success")
                 .data(orders)
@@ -85,12 +85,12 @@ public class OrderController {
             HttpServletRequest request,
             @PathVariable long id) {
 
-        OrderDto orderDto = orderService.getOrderOfUser(request, id);
+        var order = orderService.getOrderOfUser(request, id);
 
-        ApiResponse<OrderDto> response = ApiResponse
+        var response = ApiResponse
                 .<OrderDto>builder()
                 .status("success")
-                .data(orderDto)
+                .data(order)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -101,9 +101,9 @@ public class OrderController {
             @PathVariable long cartId,
             HttpServletRequest request) {
 
-        OrderDto order = orderService.createOrder(cartId, request);
+        var order = orderService.createOrder(cartId, request);
 
-        ApiResponse<OrderDto> response = ApiResponse
+        var response = ApiResponse
                 .<OrderDto>builder()
                 .status("success")
                 .message("Order was created successfully.")
@@ -120,7 +120,7 @@ public class OrderController {
 
         orderService.updateOrder(id, orderDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Order was updated successfully.")
@@ -134,7 +134,7 @@ public class OrderController {
 
         orderService.deleteOrder(id);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Order was deleted successfully.")
@@ -158,7 +158,7 @@ public class OrderController {
 
         SalesStatsDto salesStats = orderService.getSalesStats(from, to);
 
-        ApiResponse<SalesStatsDto> response = ApiResponse
+        var response = ApiResponse
                 .<SalesStatsDto>builder()
                 .status("success")
                 .data(salesStats)
@@ -172,9 +172,9 @@ public class OrderController {
             @PathVariable int days
     ) {
 
-        SalesStatsDto salesStats = orderService.getSalesStatsOfLastDays(days);
+        var salesStats = orderService.getSalesStatsOfLastDays(days);
 
-        ApiResponse<SalesStatsDto> response = ApiResponse
+        var response = ApiResponse
                 .<SalesStatsDto>builder()
                 .status("success")
                 .data(salesStats)
@@ -183,15 +183,15 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/top-items")
+    @GetMapping("/top-items/")
     public ResponseEntity<ApiResponse<List<ItemStatsDto>>> getTopItems(
             @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
             @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to
     ) {
 
-        List<ItemStatsDto> topItems = orderService.getTopItems(from, to);
+        var topItems = orderService.getTopItems(from, to);
 
-        ApiResponse<List<ItemStatsDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<ItemStatsDto>>builder()
                 .status("success")
                 .data(topItems)
@@ -205,9 +205,9 @@ public class OrderController {
             @PathVariable int days
     ) {
 
-        List<ItemStatsDto> topItems = orderService.getTopItemsOfLastDays(days);
+        var topItems = orderService.getTopItemsOfLastDays(days);
 
-        ApiResponse<List<ItemStatsDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<ItemStatsDto>>builder()
                 .status("success")
                 .data(topItems)
@@ -216,15 +216,15 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/orders")
+    @GetMapping("/order-history/")
     public ResponseEntity<ApiResponse<List<Order>>> getOrdersBetween(
             @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
             @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to
     ) {
 
-        List<Order> topItems = orderService.getOrdersBetween(from, to);
+        var topItems = orderService.getOrdersBetween(from, to);
 
-        ApiResponse<List<Order>> response = ApiResponse
+        var response = ApiResponse
                 .<List<Order>>builder()
                 .status("success")
                 .data(topItems)

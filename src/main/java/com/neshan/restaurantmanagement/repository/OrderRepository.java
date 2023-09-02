@@ -10,11 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
+
     @Query("""
             SELECT o
             FROM Order o
             WHERE o.user.id = :id
-            ORDER BY o.created_at desc
+            ORDER BY o.createdAt desc
             LIMIT 1
             """)
     Order findLastByUserId(@Param("id") long id);
@@ -22,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
             SELECT new com.neshan.restaurantmanagement.model.dto.SalesStatsDto(COUNT(*), SUM(o.totalCost))
             FROM Order o
-            WHERE o.created_at BETWEEN :from AND :to
+            WHERE o.createdAt BETWEEN :from AND :to
             """)
     SalesStatsDto getSalesStats(
             @Param("from") Date from,
@@ -31,7 +32,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
             SELECT new com.neshan.restaurantmanagement.model.dto.SalesStatsDto(COUNT(*), SUM(o.totalCost))
             FROM Order o
-            WHERE o.created_at BETWEEN :daysAgo AND :current
+            WHERE o.createdAt BETWEEN :daysAgo AND :current
             """)
     SalesStatsDto getSalesStatsOfLastDays(
             @Param("daysAgo") Date daysAgo,
@@ -64,7 +65,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("daysAgo") Date daysAgo,
             @Param("current") Date current);
 
-    List<Order> findByCreated_atBetween(
+    List<Order> findByCreatedAtBetween(
             @Param("from") Date from,
             @Param("to") Date to
     );

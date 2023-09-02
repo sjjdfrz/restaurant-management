@@ -7,7 +7,6 @@ import com.neshan.restaurantmanagement.service.UserService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +37,9 @@ public class UserController {
                     defaultValue = AppConstants.DEFAULT_SORT_BY,
                     required = false) String sortBy
     ) {
-        List<UserDto> users = userService.getAllUsers(pageNo, pageSize, sortBy);
+        var users = userService.getAllUsers(pageNo, pageSize, sortBy);
 
-        ApiResponse<List<UserDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<UserDto>>builder()
                 .status("success")
                 .data(users)
@@ -52,12 +51,12 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable long id) {
 
-        UserDto userDto = userService.getUser(id);
+        var user = userService.getUser(id);
 
-        ApiResponse<UserDto> response = ApiResponse
+        var response = ApiResponse
                 .<UserDto>builder()
                 .status("success")
-                .data(userDto)
+                .data(user)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -68,7 +67,7 @@ public class UserController {
 
         userService.deleteUser(id);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("User was deleted successfully.")
@@ -80,7 +79,7 @@ public class UserController {
     @PatchMapping("/update-me")
     @RateLimiter(name = "rate-limit")
     public ResponseEntity<ApiResponse<Object>> updateMe(
-            @Valid @RequestBody RegisterRequest registerRequest,
+            @RequestBody RegisterRequest registerRequest,
             HttpServletRequest httpRequest) {
         return ResponseEntity.ok(userService.updateMe(registerRequest, httpRequest));
     }

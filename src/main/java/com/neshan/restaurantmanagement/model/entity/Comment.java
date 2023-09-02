@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -34,4 +38,13 @@ public class Comment {
     private User user;
     private String response;
     private int score;
+
+    @CreatedDate
+    private Date created_at;
+
+    @LastModifiedDate
+    private Date modified_at;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

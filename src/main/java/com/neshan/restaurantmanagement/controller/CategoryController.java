@@ -35,9 +35,9 @@ public class CategoryController {
                     defaultValue = AppConstants.DEFAULT_SORT_BY,
                     required = false) String sortBy
     ) {
-        List<CategoryDto> categories = categoryService.getAllCategories(pageNo, pageSize, sortBy);
+        var categories = categoryService.getAllCategories(pageNo, pageSize, sortBy);
 
-        ApiResponse<List<CategoryDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CategoryDto>>builder()
                 .status("success")
                 .data(categories)
@@ -49,23 +49,24 @@ public class CategoryController {
     @GetMapping("/categories/{id}")
     public ResponseEntity<ApiResponse<CategoryDto>> getCategory(@PathVariable long id) {
 
-        CategoryDto categoryDto = categoryService.getCategory(id);
+        var category = categoryService.getCategory(id);
 
-        ApiResponse<CategoryDto> response = ApiResponse
+        var response = ApiResponse
                 .<CategoryDto>builder()
                 .status("success")
-                .data(categoryDto)
+                .data(category)
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/restaurants/{restaurantId}/categories")
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategoriesOfRestaurant(@PathVariable Long restaurantId) {
+    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategoriesOfRestaurant(
+            @PathVariable Long restaurantId) {
 
-        List<CategoryDto> categories = categoryService.getAllCategoriesOfRestaurant(restaurantId);
+        var categories = categoryService.getAllCategoriesOfRestaurant(restaurantId);
 
-        ApiResponse<List<CategoryDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CategoryDto>>builder()
                 .status("success")
                 .data(categories)
@@ -81,7 +82,7 @@ public class CategoryController {
 
         categoryService.createCategory(restaurantId, categoryDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Category was created successfully.")
@@ -92,11 +93,13 @@ public class CategoryController {
     }
 
     @PatchMapping("/categories/{id}")
-    public ResponseEntity<ApiResponse<Object>> updateCategory(@PathVariable long id, @RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<ApiResponse<Object>> updateCategory(
+            @PathVariable long id,
+            @RequestBody CategoryDto categoryDto) {
 
         categoryService.updateCategory(id, categoryDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Category was updated successfully.")
@@ -110,7 +113,7 @@ public class CategoryController {
 
         categoryService.deleteCategory(id);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Category was deleted successfully.")
@@ -126,7 +129,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("/restaurants/{restaurantId}/categories")
-    public ResponseEntity<ApiResponse<Object>> deleteAllCategoriesOfRestaurant(@PathVariable long restaurantId) {
+    public ResponseEntity<ApiResponse<Object>> deleteAllCategoriesOfRestaurant(
+            @PathVariable long restaurantId) {
         categoryService.deleteAllCategoriesOfRestaurant(restaurantId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

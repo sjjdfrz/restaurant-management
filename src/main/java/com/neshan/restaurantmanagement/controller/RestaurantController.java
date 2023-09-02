@@ -36,9 +36,10 @@ public class RestaurantController {
                     defaultValue = AppConstants.DEFAULT_SORT_BY,
                     required = false) String sortBy
     ) {
-        List<RestaurantDto> restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy);
 
-        ApiResponse<List<RestaurantDto>> response = ApiResponse
+        var restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy);
+
+        var response = ApiResponse
                 .<List<RestaurantDto>>builder()
                 .status("success")
                 .data(restaurants)
@@ -51,12 +52,12 @@ public class RestaurantController {
     public ResponseEntity<ApiResponse<RestaurantDto>> getRestaurant(
             @PathVariable long id) {
 
-        RestaurantDto restaurantDto = restaurantService.getRestaurant(id);
+        var restaurant = restaurantService.getRestaurant(id);
 
-        ApiResponse<RestaurantDto> response = ApiResponse
+        var response = ApiResponse
                 .<RestaurantDto>builder()
                 .status("success")
-                .data(restaurantDto)
+                .data(restaurant)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -68,7 +69,7 @@ public class RestaurantController {
 
         restaurantService.createRestaurant(restaurantDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Restaurant was created successfully.")
@@ -84,7 +85,7 @@ public class RestaurantController {
 
         restaurantService.updateRestaurant(id, restaurantDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Restaurant was updated successfully.")
@@ -99,7 +100,7 @@ public class RestaurantController {
 
         restaurantService.deleteRestaurant(id);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Restaurant was deleted successfully.")
