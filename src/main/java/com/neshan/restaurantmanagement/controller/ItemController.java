@@ -22,16 +22,25 @@ public class ItemController {
 
     @GetMapping("/items")
     public ResponseEntity<ApiResponse<List<ItemDto>>> getAllItems(
-            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sort", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy
+            @RequestParam(
+                    value = "page",
+                    defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(
+                    value = "size",
+                    defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(
+                    value = "sort",
+                    defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy
     ) {
-        List<ItemDto> Items = itemService.getAllItems(pageNo, pageSize, sortBy);
+        var items = itemService.getAllItems(pageNo, pageSize, sortBy);
 
-        ApiResponse<List<ItemDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<ItemDto>>builder()
                 .status("success")
-                .data(Items)
+                .data(items)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -40,26 +49,27 @@ public class ItemController {
     @GetMapping("/items/{id}")
     public ResponseEntity<ApiResponse<ItemDto>> getItem(@PathVariable long id) {
 
-        ItemDto itemDto = itemService.getItem(id);
+        var item = itemService.getItem(id);
 
-        ApiResponse<ItemDto> response = ApiResponse
+        var response = ApiResponse
                 .<ItemDto>builder()
                 .status("success")
-                .data(itemDto)
+                .data(item)
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/categories/{categoryId}/items")
-    public ResponseEntity<ApiResponse<List<ItemDto>>> getAllItemsOfCategory(@PathVariable long categoryId) {
+    public ResponseEntity<ApiResponse<List<ItemDto>>> getAllItemsOfCategory(
+            @PathVariable long categoryId) {
 
-        List<ItemDto> Items = itemService.getAllItemsOfCategory(categoryId);
+        var items = itemService.getAllItemsOfCategory(categoryId);
 
-        ApiResponse<List<ItemDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<ItemDto>>builder()
                 .status("success")
-                .data(Items)
+                .data(items)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -72,7 +82,7 @@ public class ItemController {
 
         itemService.createItem(categoryId, itemDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Item was created successfully.")
@@ -83,11 +93,13 @@ public class ItemController {
     }
 
     @PatchMapping("/items/{id}")
-    public ResponseEntity<ApiResponse<Object>> updateItem(@PathVariable long id, @RequestBody ItemDto itemDto) {
+    public ResponseEntity<ApiResponse<Object>> updateItem(
+            @PathVariable long id,
+            @RequestBody ItemDto itemDto) {
 
         itemService.updateItem(id, itemDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Item was updated successfully.")
@@ -101,8 +113,7 @@ public class ItemController {
 
         itemService.deleteItem(id);
 
-
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Item was deleted successfully.")
@@ -118,7 +129,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/categories/{categoryId}/items")
-    public ResponseEntity<ApiResponse<Object>> deleteAllItemsOfCategory(@PathVariable long categoryId) {
+    public ResponseEntity<ApiResponse<Object>> deleteAllItemsOfCategory(
+            @PathVariable long categoryId) {
         itemService.deleteAllItemsOfCategory(categoryId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

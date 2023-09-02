@@ -57,6 +57,7 @@ public class CartService {
     public List<CartDto> getAllCartsOfUser(HttpServletRequest request) {
 
         User user = (User) request.getAttribute("user");
+
         return user
                 .getCarts()
                 .stream()

@@ -59,10 +59,15 @@ public class ItemService {
     @Transactional
     public void createItem(long categoryId, ItemDto itemDto) {
 
-        Category category = categoryService.getCategoryEntityById(categoryId);
+        Category category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The category with ID %d was not found.", categoryId)));
+
 
         Item item = itemMapper.itemDtoToItem(itemDto);
-        category.getItems().add(item);
+        //item.setPrice(itemDto.price() * ((100 - itemDto.discount()) / 100));
+        category.addItem(item);
         categoryRepository.save(category);
     }
 
@@ -91,7 +96,10 @@ public class ItemService {
     @Transactional
     public void deleteAllItemsOfCategory(long categoryId) {
 
-        Category category = categoryService.getCategoryEntityById(categoryId);
+        Category category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The category with ID %d was not found.", categoryId)));
 
         category.getItems().clear();
         categoryRepository.save(category);

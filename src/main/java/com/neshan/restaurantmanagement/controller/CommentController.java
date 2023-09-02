@@ -1,12 +1,12 @@
 package com.neshan.restaurantmanagement.controller;
 
 import com.neshan.restaurantmanagement.model.ApiResponse;
-import com.neshan.restaurantmanagement.model.dto.CartDto;
 import com.neshan.restaurantmanagement.model.dto.CommentDto;
 import com.neshan.restaurantmanagement.model.dto.CommentRequestDto;
 import com.neshan.restaurantmanagement.service.CommentService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +25,9 @@ public class CommentController {
     @GetMapping("/comments")
     public ResponseEntity<ApiResponse<List<CommentDto>>> getAllComments() {
 
-        List<CommentDto> comments = commentService.getAllComments();
+        var comments = commentService.getAllComments();
 
-        ApiResponse<List<CommentDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CommentDto>>builder()
                 .status("success")
                 .data(comments)
@@ -40,9 +40,9 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentDto>> getComment(
             @PathVariable long id) {
 
-        CommentDto comment = commentService.getComment(id);
+        var comment = commentService.getComment(id);
 
-        ApiResponse<CommentDto> response = ApiResponse
+        var response = ApiResponse
                 .<CommentDto>builder()
                 .status("success")
                 .data(comment)
@@ -55,9 +55,9 @@ public class CommentController {
     public ResponseEntity<ApiResponse<List<CommentDto>>> getAllCommentsOfItem(
             @PathVariable Long itemId) {
 
-        List<CommentDto> comments = commentService.getAllCommentsOfItem(itemId);
+        var comments = commentService.getAllCommentsOfItem(itemId);
 
-        ApiResponse<List<CommentDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CommentDto>>builder()
                 .status("success")
                 .data(comments)
@@ -71,9 +71,9 @@ public class CommentController {
             HttpServletRequest request
     ) {
 
-        List<CommentDto> comments = commentService.getAllCommentsOfUser(request);
+        var comments = commentService.getAllCommentsOfUser(request);
 
-        ApiResponse<List<CommentDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CommentDto>>builder()
                 .status("success")
                 .data(comments)
@@ -86,12 +86,12 @@ public class CommentController {
     public ResponseEntity<ApiResponse<Object>> addComment(
             @PathVariable long itemId,
             HttpServletRequest request,
-            @RequestBody CommentRequestDto commentRequestDto
+            @Valid @RequestBody CommentRequestDto commentRequestDto
     ) {
 
         commentService.addComment(itemId, request, commentRequestDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Comment was created successfully.")
@@ -103,11 +103,11 @@ public class CommentController {
     @PatchMapping("/comments/{id}")
     public ResponseEntity<ApiResponse<Object>> addCommentResponse(
             @PathVariable long id,
-            CommentDto commentDto) {
+            @Valid @RequestBody CommentDto commentDto) {
 
         commentService.addCommentResponse(id, commentDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Comment was updated successfully.")
@@ -127,7 +127,7 @@ public class CommentController {
 
         commentService.deleteComment(id);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Comment was deleted successfully.")

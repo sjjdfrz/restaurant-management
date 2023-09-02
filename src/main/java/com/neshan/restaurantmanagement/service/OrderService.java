@@ -172,7 +172,7 @@ public class OrderService {
 
     @Transactional
     public List<Order> getOrdersBetween(Date from, Date to) {
-        return orderRepository.findByCreated_atBetween(from, to);
+        return orderRepository.findByCreatedAtBetween(from, to);
     }
 
     private List<ItemStatsDto> getItemStatsDtos(List<Object[]> rawResult) {

@@ -9,11 +9,5 @@ import org.mapstruct.*;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED)
 public interface CartMapper {
 
-    Cart cartDtoToCart(CartDto cartDto);
-
     CartDto cartToCartDto(Cart cart);
-
-    @Mapping(target = "id", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCartFromDto(CartDto dto, @MappingTarget Cart cart);
 }

@@ -1,13 +1,15 @@
 package com.neshan.restaurantmanagement.model.dto;
 
-import com.neshan.restaurantmanagement.model.entity.User;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record CommentDto(
 
+        long id,
         String body,
-        int score,
-        User user,
+        Integer score,
+        String username,
 
         @NotBlank
         String response

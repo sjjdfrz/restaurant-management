@@ -84,6 +84,7 @@ public class CommentService {
         Comment comment = commentMapper.commentRequestDtoToComment(commentRequestDto);
         comment.setUser(user);
         item.addComment(comment);
+        itemRepository.save(item);
     }
 
     @Transactional
@@ -94,6 +95,7 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The comment with ID %d was not found.", commentId)));
 
+        System.out.println(commentDto.response());
         comment.setResponse(commentDto.response());
         commentRepository.save(comment);
     }

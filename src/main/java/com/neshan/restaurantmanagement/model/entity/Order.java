@@ -53,7 +53,7 @@ public class Order {
     private User user;
 
     @CreatedDate
-    private Date created_at;
+    private Date createdAt;
 
     @LastModifiedDate
     private Date modified_at;

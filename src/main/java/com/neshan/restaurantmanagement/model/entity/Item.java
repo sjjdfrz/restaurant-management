@@ -37,7 +37,6 @@ public class Item {
 
     private String name;
 
-    @Setter(AccessLevel.NONE)
     private int price;
 
     private String description;
@@ -46,13 +45,13 @@ public class Item {
     @Builder.Default
     private ItemStatus itemStatus = ItemStatus.AVAILABLE;
 
-    private int discount;
+    //private int discount;
 
     @Builder.Default
     private boolean deleted = false;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn("item_id")
+    @JoinColumn(name = "item_id")
     List<Comment> comments;
 
     @CreatedDate
@@ -60,14 +59,6 @@ public class Item {
 
     @LastModifiedDate
     private Date modified_at;
-
-    public void setPrice(int price) {
-
-        if (discount != 0)
-            this.price = price * ((100 - discount) / 100);
-        else
-            this.price = price;
-    }
 
     public void addComment(Comment comment) {
         if (comments == null) {

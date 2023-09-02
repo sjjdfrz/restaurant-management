@@ -37,9 +37,9 @@ public class CartController {
                     defaultValue = AppConstants.DEFAULT_SORT_BY,
                     required = false) String sortBy
     ) {
-        List<CartDto> carts = cartService.getAllCarts(pageNo, pageSize, sortBy);
+        var carts = cartService.getAllCarts(pageNo, pageSize, sortBy);
 
-        ApiResponse<List<CartDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CartDto>>builder()
                 .status("success")
                 .data(carts)
@@ -51,9 +51,9 @@ public class CartController {
     @GetMapping("/carts/{id}")
     public ResponseEntity<ApiResponse<CartDto>> getCart(@PathVariable long id) {
 
-        CartDto cart = cartService.getCart(id);
+        var cart = cartService.getCart(id);
 
-        ApiResponse<CartDto> response = ApiResponse
+        var response = ApiResponse
                 .<CartDto>builder()
                 .status("success")
                 .data(cart)
@@ -63,11 +63,12 @@ public class CartController {
     }
 
     @GetMapping("/my-carts")
-    public ResponseEntity<ApiResponse<List<CartDto>>> getAllCartsOfUser(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<CartDto>>> getAllCartsOfUser(
+            HttpServletRequest request) {
 
-        List<CartDto> carts = cartService.getAllCartsOfUser(request);
+        var carts = cartService.getAllCartsOfUser(request);
 
-        ApiResponse<List<CartDto>> response = ApiResponse
+        var response = ApiResponse
                 .<List<CartDto>>builder()
                 .status("success")
                 .data(carts)
@@ -82,9 +83,9 @@ public class CartController {
             @PathVariable long id
     ) {
 
-        CartDto cart = cartService.getCartOfUser(request, id);
+        var cart = cartService.getCartOfUser(request, id);
 
-        ApiResponse<CartDto> response = ApiResponse
+        var response = ApiResponse
                 .<CartDto>builder()
                 .status("success")
                 .data(cart)
@@ -100,7 +101,7 @@ public class CartController {
 
         cartService.createCart(cartRequestDto, request);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Cart was created successfully.")
@@ -116,7 +117,7 @@ public class CartController {
 
         cartService.updateCart(id, cartRequestDto);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Cart was updated successfully.")
@@ -130,7 +131,7 @@ public class CartController {
 
         cartService.deleteCart(id);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("Cart was deleted successfully.")
@@ -144,7 +145,7 @@ public class CartController {
 
         cartService.deleteAllCarts(request);
 
-        ApiResponse<Object> response = ApiResponse
+        var response = ApiResponse
                 .builder()
                 .status("success")
                 .message("All Carts were deleted successfully.")

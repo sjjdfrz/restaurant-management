@@ -49,15 +49,6 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category getCategoryEntityById(long id) {
-
-        return categoryRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The category with ID %d was not found.", id)));
-    }
-
-    @Transactional
     public List<CategoryDto> getAllCategoriesOfRestaurant(Long restaurantId) {
         return restaurantService
                 .getRestaurant(restaurantId)
@@ -67,7 +58,10 @@ public class CategoryService {
     @Transactional
     public void createCategory(long restaurantId, CategoryDto categoryDto) {
 
-        Restaurant restaurant = restaurantService.getRestaurantEntityById(restaurantId);
+        Restaurant restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The restaurant with ID %d was not found.", restaurantId)));
 
         Category category = categoryMapper.categoryDtoToCategory(categoryDto);
         restaurant.getCategories().add(category);
@@ -77,7 +71,10 @@ public class CategoryService {
     @Transactional
     public void updateCategory(long id, CategoryDto categoryRequest) {
 
-        Category category = getCategoryEntityById(id);
+        Category category = categoryRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The category with ID %d was not found.", id)));
 
         categoryMapper.updateCategoryFromDto(categoryRequest, category);
         categoryRepository.save(category);
@@ -96,7 +93,10 @@ public class CategoryService {
     @Transactional
     public void deleteAllCategoriesOfRestaurant(long restaurantId) {
 
-        Restaurant restaurant = restaurantService.getRestaurantEntityById(restaurantId);
+        Restaurant restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The restaurant with ID %d was not found.", restaurantId)));
 
         restaurant.getCategories().clear();
         restaurantRepository.save(restaurant);

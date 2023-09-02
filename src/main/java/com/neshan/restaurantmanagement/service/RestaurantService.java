@@ -45,15 +45,6 @@ public class RestaurantService {
     }
 
     @Transactional
-    public Restaurant getRestaurantEntityById(long id) {
-
-        return restaurantRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The restaurant with ID %d was not found.", id)));
-    }
-
-    @Transactional
     public void createRestaurant(RestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantMapper.restaurantDtoToRestaurant(restaurantDto);
         restaurantRepository.save(restaurant);
@@ -62,7 +53,10 @@ public class RestaurantService {
     @Transactional
     public void updateRestaurant(long id, RestaurantDto restaurantRequest) {
 
-        Restaurant restaurant = getRestaurantEntityById(id);
+        Restaurant restaurant = restaurantRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        String.format("The restaurant with ID %d was not found.", id)));
 
         restaurantMapper.updateRestaurantFromDto(restaurantRequest, restaurant);
         restaurantRepository.save(restaurant);
