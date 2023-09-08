@@ -30,7 +30,10 @@ public class Cart {
             sequenceName = "cart_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "cart_sequence"
+    )
     @Column(updatable = false)
     private long id;
 

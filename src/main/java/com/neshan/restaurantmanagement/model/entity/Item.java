@@ -31,7 +31,10 @@ public class Item {
             sequenceName = "item_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "item_sequence"
+    )
     @Column(updatable = false)
     private long id;
 

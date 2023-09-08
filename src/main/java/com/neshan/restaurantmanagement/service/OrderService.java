@@ -154,8 +154,7 @@ public class OrderService {
     @Transactional
     public List<ItemStatsDto> getTopItems(Date from, Date to) {
 
-        List<Object[]> rawResult = orderRepository.getTopItems(from, to);
-        return getItemStatsDtos(rawResult);
+        return orderRepository.getTopItems(from, to);
     }
 
     @Transactional
@@ -166,24 +165,12 @@ public class OrderService {
         cal.add(Calendar.DATE, -days);
         Date daysAgo = cal.getTime();
 
-        List<Object[]> rawResult = orderRepository.getTopItemsOfLastDays(daysAgo, current);
-        return getItemStatsDtos(rawResult);
+        return orderRepository.getTopItemsOfLastDays(daysAgo, current);
+
     }
 
     @Transactional
     public List<Order> getOrdersBetween(Date from, Date to) {
         return orderRepository.findByCreatedAtBetween(from, to);
-    }
-
-    private List<ItemStatsDto> getItemStatsDtos(List<Object[]> rawResult) {
-        List<ItemStatsDto> topItems = new ArrayList<>();
-
-        for (Object[] row : rawResult) {
-            String itemName = (String) row[0];
-            int quantity = (int) row[1];
-            ItemStatsDto itemStatsDto = new ItemStatsDto(itemName, quantity);
-            topItems.add(itemStatsDto);
-        }
-        return topItems;
     }
 }

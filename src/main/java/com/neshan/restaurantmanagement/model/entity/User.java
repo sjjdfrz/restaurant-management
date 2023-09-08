@@ -35,7 +35,10 @@ public class User implements UserDetails {
             sequenceName = "user_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     @Column(updatable = false)
     private long id;
 

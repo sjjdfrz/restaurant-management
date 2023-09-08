@@ -1,5 +1,6 @@
 package com.neshan.restaurantmanagement.repository;
 
+import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.SalesStatsDto;
 import com.neshan.restaurantmanagement.model.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,26 +21,26 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             """)
     Order findLastByUserId(@Param("id") long id);
 
-    @Query("""
-            SELECT new com.neshan.restaurantmanagement.model.dto.SalesStatsDto(COUNT(*), SUM(o.totalCost))
-            FROM Order o
-            WHERE o.createdAt BETWEEN :from AND :to
-            """)
+    @Query(value = """
+            SELECT COUNT(*) as orderCounts, SUM(o.total_cost) as totalSales
+            FROM orders o
+            WHERE o.created_at BETWEEN :from AND :to
+            """, nativeQuery = true)
     SalesStatsDto getSalesStats(
             @Param("from") Date from,
             @Param("to") Date to);
 
-    @Query("""
-            SELECT new com.neshan.restaurantmanagement.model.dto.SalesStatsDto(COUNT(*), SUM(o.totalCost))
-            FROM Order o
-            WHERE o.createdAt BETWEEN :daysAgo AND :current
-            """)
+    @Query(value = """
+            SELECTCOUNT(*) as orderCounts, SUM(o.total_cost) as totalSales
+            FROM orders o
+            WHERE o.created_at BETWEEN :daysAgo AND :current
+            """, nativeQuery = true)
     SalesStatsDto getSalesStatsOfLastDays(
             @Param("daysAgo") Date daysAgo,
             @Param("current") Date current);
 
     @Query(value = """
-            SELECT i.name, oi.quantity
+            SELECT i.name as name, oi.quantity as quantity
             FROM orders o
             INNER JOIN order_items oi ON o.id = oi.order_id
             INNER JOIN items i on i.id = oi.item_id
@@ -47,7 +48,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             ORDER BY oi.quantity DESC
             LIMIT 5
              """, nativeQuery = true)
-    List<Object[]> getTopItems(
+    List<ItemStatsDto> getTopItems(
             @Param("from") Date from,
             @Param("to") Date to
     );
@@ -61,7 +62,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             ORDER BY oi.quantity DESC
             LIMIT 5
              """, nativeQuery = true)
-    List<Object[]> getTopItemsOfLastDays(
+    List<ItemStatsDto> getTopItemsOfLastDays(
             @Param("daysAgo") Date daysAgo,
             @Param("current") Date current);
 
@@ -69,5 +70,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("from") Date from,
             @Param("to") Date to
     );
-
 }

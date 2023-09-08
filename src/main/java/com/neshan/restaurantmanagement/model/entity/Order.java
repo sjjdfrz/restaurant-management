@@ -31,7 +31,10 @@ public class Order {
             sequenceName = "order_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "order_sequence"
+    )
     @Column(updatable = false)
     private long id;
 

@@ -30,7 +30,10 @@ public class Restaurant {
             sequenceName = "restaurant_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "restaurant_sequence"
+    )
     @Column(updatable = false)
     private long id;
 
@@ -38,7 +41,7 @@ public class Restaurant {
     private long telephone;
     private String address;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
     private List<Category> categories;
 
