@@ -1,8 +1,7 @@
 package com.neshan.restaurantmanagement.model.dto;
 
-public record SalesStatsDto(
+public interface SalesStatsDto {
 
-        Long orderCounts,
-        Double totalSales
-) {
+    long getOrderCounts();
+    double getTotalSales();
 }

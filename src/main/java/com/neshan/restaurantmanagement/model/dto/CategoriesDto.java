@@ -1,21 +1,21 @@
 package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RestaurantDto {
+public class CategoriesDto {
 
-    private String name;
+    private long id;
 
-    private List<CategoriesDto> categories;
+    @NotBlank(message = "Invalid Title: Empty title!")
+    private String title;
 }

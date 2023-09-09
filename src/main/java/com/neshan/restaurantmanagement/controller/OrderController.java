@@ -3,16 +3,18 @@ package com.neshan.restaurantmanagement.controller;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
+import com.neshan.restaurantmanagement.model.dto.OrdersDto;
 import com.neshan.restaurantmanagement.model.dto.SalesStatsDto;
 import com.neshan.restaurantmanagement.model.entity.Order;
+import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.service.OrderService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -26,7 +28,7 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping("/orders")
-    public ResponseEntity<ApiResponse<List<OrderDto>>> getAllOrders(
+    public ResponseEntity<ApiResponse<List<OrdersDto>>> getAllOrders(
             @RequestParam(
                     value = "page",
                     defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
@@ -43,7 +45,7 @@ public class OrderController {
         var orders = orderService.getAllOrders(pageNo, pageSize, sortBy);
 
         var response = ApiResponse
-                .<List<OrderDto>>builder()
+                .<List<OrdersDto>>builder()
                 .status("success")
                 .data(orders)
                 .build();
@@ -66,13 +68,13 @@ public class OrderController {
     }
 
     @GetMapping("/my-orders")
-    public ResponseEntity<ApiResponse<List<OrderDto>>> getAllOrdersOfUser(
-            HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<OrdersDto>>> getAllOrdersOfUser(
+            @AuthenticationPrincipal User user) {
 
-        var orders = orderService.getAllOrdersOfUser(request);
+        var orders = orderService.getAllOrdersOfUser(user);
 
         var response = ApiResponse
-                .<List<OrderDto>>builder()
+                .<List<OrdersDto>>builder()
                 .status("success")
                 .data(orders)
                 .build();
@@ -82,10 +84,10 @@ public class OrderController {
 
     @GetMapping("/my-orders/{id}")
     public ResponseEntity<ApiResponse<OrderDto>> getOrderOfUser(
-            HttpServletRequest request,
-            @PathVariable long id) {
+            @PathVariable long id,
+            @AuthenticationPrincipal User user) {
 
-        var order = orderService.getOrderOfUser(request, id);
+        var order = orderService.getOrderOfUser(user, id);
 
         var response = ApiResponse
                 .<OrderDto>builder()
@@ -97,14 +99,14 @@ public class OrderController {
     }
 
     @PostMapping("/carts/{cartId}/orders")
-    public ResponseEntity<ApiResponse<OrderDto>> createOrder(
+    public ResponseEntity<ApiResponse<OrdersDto>> createOrder(
             @PathVariable long cartId,
-            HttpServletRequest request) {
+            @AuthenticationPrincipal User user) {
 
-        var order = orderService.createOrder(cartId, request);
+        var order = orderService.createOrder(cartId, user);
 
         var response = ApiResponse
-                .<OrderDto>builder()
+                .<OrdersDto>builder()
                 .status("success")
                 .message("Order was created successfully.")
                 .data(order)
@@ -116,9 +118,9 @@ public class OrderController {
     @PatchMapping("/orders/{id}")
     public ResponseEntity<ApiResponse<Object>> updateOrder(
             @PathVariable long id,
-            @RequestBody OrderDto orderDto) {
+            @RequestBody OrdersDto ordersDto) {
 
-        orderService.updateOrder(id, orderDto);
+        orderService.updateOrder(id, ordersDto);
 
         var response = ApiResponse
                 .builder()

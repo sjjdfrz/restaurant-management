@@ -53,7 +53,7 @@ public class ItemService {
 
         return categoryService
                 .getCategory(categoryId)
-                .items();
+                .getItems();
     }
 
     @Transactional
@@ -66,7 +66,6 @@ public class ItemService {
 
 
         Item item = itemMapper.itemDtoToItem(itemDto);
-        //item.setPrice(itemDto.price() * ((100 - itemDto.discount()) / 100));
         category.addItem(item);
         categoryRepository.save(category);
     }

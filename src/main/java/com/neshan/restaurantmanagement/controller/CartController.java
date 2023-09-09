@@ -3,13 +3,14 @@ package com.neshan.restaurantmanagement.controller;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.CartDto;
 import com.neshan.restaurantmanagement.model.dto.CartRequestDto;
+import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.service.CartService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,9 +65,9 @@ public class CartController {
 
     @GetMapping("/my-carts")
     public ResponseEntity<ApiResponse<List<CartDto>>> getAllCartsOfUser(
-            HttpServletRequest request) {
+            @AuthenticationPrincipal User user) {
 
-        var carts = cartService.getAllCartsOfUser(request);
+        var carts = cartService.getAllCartsOfUser(user);
 
         var response = ApiResponse
                 .<List<CartDto>>builder()
@@ -79,11 +80,11 @@ public class CartController {
 
     @GetMapping("my-carts/{id}")
     public ResponseEntity<ApiResponse<CartDto>> getCartOfUser(
-            HttpServletRequest request,
+            @AuthenticationPrincipal User user,
             @PathVariable long id
     ) {
 
-        var cart = cartService.getCartOfUser(request, id);
+        var cart = cartService.getCartOfUser(user, id);
 
         var response = ApiResponse
                 .<CartDto>builder()
@@ -97,9 +98,9 @@ public class CartController {
     @PostMapping("/my-carts")
     public ResponseEntity<ApiResponse<Object>> createCart(
             @RequestBody CartRequestDto cartRequestDto,
-            HttpServletRequest request) {
+            @AuthenticationPrincipal User user) {
 
-        cartService.createCart(cartRequestDto, request);
+        cartService.createCart(cartRequestDto, user);
 
         var response = ApiResponse
                 .builder()
@@ -141,9 +142,9 @@ public class CartController {
     }
 
     @DeleteMapping("/my-carts")
-    public ResponseEntity<ApiResponse<Object>> deleteAllCarts(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> deleteAllCarts(@AuthenticationPrincipal User user) {
 
-        cartService.deleteAllCarts(request);
+        cartService.deleteAllCarts(user);
 
         var response = ApiResponse
                 .builder()

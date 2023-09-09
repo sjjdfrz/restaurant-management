@@ -1,15 +1,17 @@
 package com.neshan.restaurantmanagement.controller;
 
 import com.neshan.restaurantmanagement.model.ApiResponse;
+import com.neshan.restaurantmanagement.model.dto.RegisterRequest;
 import com.neshan.restaurantmanagement.model.dto.UserDto;
-import com.neshan.restaurantmanagement.security.RegisterRequest;
+import com.neshan.restaurantmanagement.model.dto.UsersDto;
+import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.service.UserService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers(
+    public ResponseEntity<ApiResponse<List<UsersDto>>> getAllUsers(
             @RequestParam(
                     value = "page",
                     defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
@@ -40,7 +42,7 @@ public class UserController {
         var users = userService.getAllUsers(pageNo, pageSize, sortBy);
 
         var response = ApiResponse
-                .<List<UserDto>>builder()
+                .<List<UsersDto>>builder()
                 .status("success")
                 .data(users)
                 .build();
@@ -80,19 +82,19 @@ public class UserController {
     @RateLimiter(name = "rate-limit")
     public ResponseEntity<ApiResponse<Object>> updateMe(
             @RequestBody RegisterRequest registerRequest,
-            HttpServletRequest httpRequest) {
-        return ResponseEntity.ok(userService.updateMe(registerRequest, httpRequest));
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.updateMe(registerRequest, user));
     }
 
     @DeleteMapping("/delete-me")
     @RateLimiter(name = "rate-limit")
-    public ResponseEntity<ApiResponse<Object>> deleteMe(HttpServletRequest httpRequest) {
-        return ResponseEntity.ok(userService.deleteMe(httpRequest));
+    public ResponseEntity<ApiResponse<Object>> deleteMe(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.deleteMe(user));
     }
 
     @GetMapping("/me")
     @RateLimiter(name = "rate-limit")
-    public ResponseEntity<ApiResponse<UserDto>> getMe(HttpServletRequest httpRequest) {
-        return ResponseEntity.ok(userService.getMe(httpRequest));
+    public ResponseEntity<ApiResponse<UsersDto>> getMe(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.getMe(user));
     }
 }

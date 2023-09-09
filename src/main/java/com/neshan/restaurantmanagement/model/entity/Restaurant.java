@@ -30,7 +30,10 @@ public class Restaurant {
             sequenceName = "restaurant_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "restaurant_sequence"
+    )
     @Column(updatable = false)
     private long id;
 

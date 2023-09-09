@@ -1,7 +1,10 @@
 package com.neshan.restaurantmanagement.service;
 
+import com.neshan.restaurantmanagement.cache.CategoryCache;
+import com.neshan.restaurantmanagement.cache.RestaurantCache;
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.mapper.CategoryMapper;
+import com.neshan.restaurantmanagement.model.dto.CategoriesDto;
 import com.neshan.restaurantmanagement.model.dto.CategoryDto;
 import com.neshan.restaurantmanagement.model.entity.Category;
 import com.neshan.restaurantmanagement.model.entity.Restaurant;
@@ -22,54 +25,66 @@ public class CategoryService {
 
     private CategoryRepository categoryRepository;
     private CategoryMapper categoryMapper;
-    private RestaurantService restaurantService;
+    private CategoryCache categoryCache;
+    private RestaurantCache restaurantCache;
     private RestaurantRepository restaurantRepository;
 
     @Transactional
-    public List<CategoryDto> getAllCategories(int pageNo, int pageSize, String sortBy) {
+    public List<CategoriesDto> getAllCategories(int pageNo, int pageSize, String sortBy) {
 
-        List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
-        Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
+        if (categoryCache.getCategories().isEmpty()) {
 
-        return categoryRepository
-                .findAll(paging)
-                .map(category -> categoryMapper.categoryToCategoryDto(category))
-                .getContent();
+            List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
+            Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
+
+            return categoryRepository
+                    .findAll(paging)
+                    .map(category -> categoryMapper.categoryToCategoriesDto(category))
+                    .getContent();
+        }
+
+        return categoryCache
+                .getCategories()
+                .values()
+                .stream()
+                .map(category -> categoryMapper.categoryToCategoriesDto(category))
+                .toList();
     }
 
     @Transactional
     public CategoryDto getCategory(long id) {
 
-        Category category = categoryRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The category with ID %d was not found.", id)));
+        if (categoryCache.getCategories().isEmpty()) {
 
-        return categoryMapper.categoryToCategoryDto(category);
+            Category category = categoryRepository
+                    .findById(id)
+                    .orElseThrow(() -> new NoSuchElementFoundException(
+                            String.format("The category with ID %d was not found.", id)));
+
+            return categoryMapper.categoryToCategoryDto(category);
+        }
+
+        return categoryMapper
+                .categoryToCategoryDto(categoryCache.getCategories().get(id));
     }
 
     @Transactional
-    public List<CategoryDto> getAllCategoriesOfRestaurant(Long restaurantId) {
-        return restaurantService
-                .getRestaurant(restaurantId)
-                .categories();
-    }
-
-    @Transactional
-    public void createCategory(long restaurantId, CategoryDto categoryDto) {
+    public void createCategory(long restaurantId, CategoriesDto categoriesDto) {
 
         Restaurant restaurant = restaurantRepository
                 .findById(restaurantId)
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The restaurant with ID %d was not found.", restaurantId)));
 
-        Category category = categoryMapper.categoryDtoToCategory(categoryDto);
-        restaurant.getCategories().add(category);
+        Category category = categoryMapper.categoriesDtoToCategory(categoriesDto);
+        restaurant.addCategory(category);
         restaurantRepository.save(restaurant);
+
+        // TODO update categoryCache
     }
 
     @Transactional
-    public void updateCategory(long id, CategoryDto categoryRequest) {
+    public void updateCategory(long id, CategoriesDto categoryRequest) {
 
         Category category = categoryRepository
                 .findById(id)
@@ -78,16 +93,20 @@ public class CategoryService {
 
         categoryMapper.updateCategoryFromDto(categoryRequest, category);
         categoryRepository.save(category);
+
+        categoryCache.update(id, category);
     }
 
     @Transactional
     public void deleteCategory(long id) {
         categoryRepository.deleteById(id);
+        categoryCache.delete(id);
     }
 
     @Transactional
     public void deleteAllCategories() {
         categoryRepository.deleteAll();
+        categoryCache.deleteAll();
     }
 
     @Transactional
@@ -100,5 +119,7 @@ public class CategoryService {
 
         restaurant.getCategories().clear();
         restaurantRepository.save(restaurant);
+
+        restaurantCache.deleteAllCategoriesOfRestaurant(restaurantId);
     }
 }

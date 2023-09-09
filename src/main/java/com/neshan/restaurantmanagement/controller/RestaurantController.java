@@ -2,6 +2,7 @@ package com.neshan.restaurantmanagement.controller;
 
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
+import com.neshan.restaurantmanagement.model.dto.RestaurantsDto;
 import com.neshan.restaurantmanagement.service.RestaurantService;
 import com.neshan.restaurantmanagement.util.AppConstants;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -22,7 +23,7 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<RestaurantDto>>> getAllRestaurants(
+    public ResponseEntity<ApiResponse<List<RestaurantsDto>>> getAllRestaurants(
             @RequestParam(
                     value = "page",
                     defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
@@ -40,7 +41,7 @@ public class RestaurantController {
         var restaurants = restaurantService.getAllRestaurants(pageNo, pageSize, sortBy);
 
         var response = ApiResponse
-                .<List<RestaurantDto>>builder()
+                .<List<RestaurantsDto>>builder()
                 .status("success")
                 .data(restaurants)
                 .build();
@@ -65,9 +66,9 @@ public class RestaurantController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> createRestaurant(
-            @Valid @RequestBody RestaurantDto restaurantDto) {
+            @Valid @RequestBody RestaurantsDto restaurantsDto) {
 
-        restaurantService.createRestaurant(restaurantDto);
+        restaurantService.createRestaurant(restaurantsDto);
 
         var response = ApiResponse
                 .builder()
@@ -81,9 +82,9 @@ public class RestaurantController {
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> updateRestaurant
             (@PathVariable long id,
-             @RequestBody RestaurantDto restaurantDto) {
+             @RequestBody RestaurantsDto restaurantsDto) {
 
-        restaurantService.updateRestaurant(id, restaurantDto);
+        restaurantService.updateRestaurant(id, restaurantsDto);
 
         var response = ApiResponse
                 .builder()

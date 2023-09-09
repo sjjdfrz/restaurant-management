@@ -12,7 +12,6 @@ import com.neshan.restaurantmanagement.repository.CartRepository;
 import com.neshan.restaurantmanagement.repository.ItemRepository;
 import com.neshan.restaurantmanagement.repository.UserRepository;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -54,49 +53,35 @@ public class CartService {
     }
 
     @Transactional
-    public List<CartDto> getAllCartsOfUser(HttpServletRequest request) {
+    public List<CartDto> getAllCartsOfUser(User user) {
 
-        User user = (User) request.getAttribute("user");
-
-        return user
-                .getCarts()
+        return cartRepository
+                .findAllByUserId(user.getId())
                 .stream()
                 .map(cart -> cartMapper.cartToCartDto(cart))
                 .toList();
     }
 
     @Transactional
-    public CartDto getCartOfUser(HttpServletRequest request, long id) {
+    public CartDto getCartOfUser(User user, long id) {
 
-        User user = (User) request.getAttribute("user");
-
-        Cart userCart = user
-                .getCarts()
-                .stream()
-                .filter(cart -> cart.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The cart with ID %d was not found.", id)));
-
+        Cart userCart = cartRepository.findByUserIdAndId(user.getId(), id);
         return cartMapper.cartToCartDto(userCart);
     }
 
     @Transactional
-    public void createCart(CartRequestDto cartRequestDto, HttpServletRequest request) {
+    public void createCart(CartRequestDto cartRequestDto, User user) {
 
-        User user = (User) request.getAttribute("user");
         Cart cart = new Cart();
+        cart.setUser(user);
 
-        if (cartRequestDto.cartItems() == null || cartRequestDto.cartItems().isEmpty()) {
-            user.addCart(cart);
-            userRepository.save(user);
+        if (cartRequestDto.getCartItems() == null || cartRequestDto.getCartItems().isEmpty()) {
+            cartRepository.save(cart);
             return;
         }
 
         addCartItemToCart(cartRequestDto, cart);
-
-        user.addCart(cart);
-        userRepository.save(user);
+        cartRepository.save(cart);
     }
 
     @Transactional
@@ -107,11 +92,10 @@ public class CartService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The cart with ID %d was not found.", id)));
 
-        if (cartRequestDto.cartItems() == null || cartRequestDto.cartItems().isEmpty())
+        if (cartRequestDto.getCartItems() == null || cartRequestDto.getCartItems().isEmpty())
             return;
 
         addCartItemToCart(cartRequestDto, cart);
-
         cartRepository.save(cart);
     }
 
@@ -121,8 +105,7 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteAllCarts(HttpServletRequest request) {
-        User user = (User) request.getAttribute("user");
+    public void deleteAllCarts(User user) {
         user.getCarts().clear();
         userRepository.save(user);
     }
@@ -130,11 +113,11 @@ public class CartService {
     private void addCartItemToCart(CartRequestDto cartRequestDto, Cart cart) {
 
         cartRequestDto
-                .cartItems()
+                .getCartItems()
                 .forEach(cartItem -> {
 
-                    int quantity = cartItem.quantity();
-                    long itemId = cartItem.itemId();
+                    int quantity = cartItem.getQuantity();
+                    long itemId = cartItem.getItemId();
 
                     Item item = itemRepository
                             .findById(itemId)
