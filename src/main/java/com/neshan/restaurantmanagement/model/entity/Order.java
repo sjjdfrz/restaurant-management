@@ -48,8 +48,8 @@ public class Order {
     @Builder.Default
     private boolean deleted = false;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<CartItem> items;
+    @ElementCollection
+    private List<CartItem> items = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

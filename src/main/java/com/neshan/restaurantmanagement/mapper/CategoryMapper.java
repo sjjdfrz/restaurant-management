@@ -1,5 +1,6 @@
 package com.neshan.restaurantmanagement.mapper;
 
+import com.neshan.restaurantmanagement.model.dto.CategoriesDto;
 import com.neshan.restaurantmanagement.model.dto.CategoryDto;
 import com.neshan.restaurantmanagement.model.entity.Category;
 import org.mapstruct.*;
@@ -9,13 +10,13 @@ import org.mapstruct.*;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED)
 public interface CategoryMapper {
 
+    CategoriesDto categoryToCategoriesDto(Category category);
+
     CategoryDto categoryToCategoryDto(Category category);
 
-    @Mapping(target = "items", ignore = true)
-    Category categoryDtoToCategory(CategoryDto categoryDto);
+    Category categoriesDtoToCategory(CategoriesDto categoriesDto);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "items", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCategoryFromDto(CategoryDto dto, @MappingTarget Category category);
+    void updateCategoryFromDto(CategoriesDto dto, @MappingTarget Category category);
 }

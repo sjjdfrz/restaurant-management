@@ -24,9 +24,9 @@ public class AvailableValidator implements ConstraintValidator<Available, List<C
                 .allMatch(cartItem -> {
 
                     Item item = itemRepository
-                            .findById(cartItem.itemId())
+                            .findById(cartItem.getItemId())
                             .orElseThrow(() -> new NoSuchElementFoundException(
-                                    String.format("The item with ID %d was not found.", cartItem.itemId())));
+                                    String.format("The item with ID %d was not found.", cartItem.getItemId())));
 
                     return item.getItemStatus() == ItemStatus.AVAILABLE;
                 });

@@ -7,9 +7,8 @@ public class AppConstants {
 
     public static final String[] GET_UN_SECURED_URLs = {
             "/restaurants/**",
-            "/restaurants/{restaurantId}/categories",
             "/categories/{categoryId}/items",
-            "/items/{itemId}/comments"
+            "/items/{itemId}/comments",
     };
 
     public static final String[] POST_UN_SECURED_URLs = {
@@ -56,7 +55,6 @@ public class AppConstants {
             "/restaurants",
             "/restaurants/{restaurantId}/categories",
             "/categories/{categoryId}/items"
-
     };
 
     public static final String[] PATCH_ADMIN_SECURED_URLs = {
@@ -65,7 +63,6 @@ public class AppConstants {
             "/categories/**",
             "/items/**",
             "/comments/**"
-
     };
 
     public static final String[] DELETE_ADMIN_SECURED_URLs = {

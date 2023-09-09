@@ -4,11 +4,11 @@ import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.mapper.UserMapper;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.UserDto;
+import com.neshan.restaurantmanagement.model.dto.UsersDto;
 import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.repository.UserRepository;
-import com.neshan.restaurantmanagement.security.RegisterRequest;
+import com.neshan.restaurantmanagement.model.dto.RegisterRequest;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,14 +27,14 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public List<UserDto> getAllUsers(int pageNo, int pageSize, String sortBy) {
+    public List<UsersDto> getAllUsers(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
         Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
         return userRepository
                 .findAll(paging)
-                .map(user -> userMapper.userToUserDto(user))
+                .map(user -> userMapper.userToUsersDto(user))
                 .getContent();
     }
 
@@ -51,21 +51,13 @@ public class UserService {
 
     @Transactional
     public void deleteUser(long id) {
-
-        User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The user with ID %d was not found.", id)));
-
-        userRepository.delete(user);
+        userRepository.deleteById(id);
     }
 
     @Transactional
     public ApiResponse<Object> updateMe(
             RegisterRequest updateRequest,
-            HttpServletRequest httpRequest) {
-
-        User user = (User) httpRequest.getAttribute("user");
+            User user) {
 
         if (!updateRequest.password().isBlank())
             user.setPassword(passwordEncoder.encode(updateRequest.password()));
@@ -81,9 +73,7 @@ public class UserService {
     }
 
     @Transactional
-    public ApiResponse<Object> deleteMe(HttpServletRequest httpRequest) {
-
-        User user = (User) httpRequest.getAttribute("user");
+    public ApiResponse<Object> deleteMe(User user) {
 
         user.setDeleted(true);
         userRepository.save(user);
@@ -95,16 +85,14 @@ public class UserService {
     }
 
     @Transactional
-    public ApiResponse<UserDto> getMe(HttpServletRequest httpRequest) {
+    public ApiResponse<UsersDto> getMe(User user) {
 
-        User user = (User) httpRequest.getAttribute("user");
-
-        UserDto userDto = userMapper.userToUserDto(user);
+        UsersDto usersDto = userMapper.userToUsersDto(user);
 
         return ApiResponse
-                .<UserDto>builder()
+                .<UsersDto>builder()
                 .status("success")
-                .data(userDto)
+                .data(usersDto)
                 .build();
     }
 }

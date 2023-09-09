@@ -39,6 +39,7 @@ public class Comment {
 
     @OneToOne
     private User user;
+
     private String response;
     private int score;
 

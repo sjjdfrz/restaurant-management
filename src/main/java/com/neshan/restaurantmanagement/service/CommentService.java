@@ -9,7 +9,6 @@ import com.neshan.restaurantmanagement.model.entity.Item;
 import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.repository.CommentRepository;
 import com.neshan.restaurantmanagement.repository.ItemRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,9 +59,7 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentDto> getAllCommentsOfUser(HttpServletRequest request) {
-
-        User user = (User) request.getAttribute("user");
+    public List<CommentDto> getAllCommentsOfUser(User user) {
 
         return commentRepository
                 .findAllByUserId(user.getId())
@@ -72,14 +69,12 @@ public class CommentService {
     }
 
     @Transactional
-    public void addComment(long itemId, HttpServletRequest request, CommentRequestDto commentRequestDto) {
+    public void addComment(long itemId, User user, CommentRequestDto commentRequestDto) {
 
         Item item = itemRepository
                 .findById(itemId)
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The item with ID %d was not found.", itemId)));
-
-        User user = (User) request.getAttribute("user");
 
         Comment comment = commentMapper.commentRequestDtoToComment(commentRequestDto);
         comment.setUser(user);
@@ -95,8 +90,7 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The comment with ID %d was not found.", commentId)));
 
-        System.out.println(commentDto.response());
-        comment.setResponse(commentDto.response());
+        comment.setResponse(commentDto.getResponse());
         commentRepository.save(comment);
     }
 

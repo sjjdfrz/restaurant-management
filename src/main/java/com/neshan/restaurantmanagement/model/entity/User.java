@@ -53,8 +53,8 @@ public class User implements UserDetails {
     @Transient
     private String confirmPassword;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Order> orders;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orders;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -63,8 +63,7 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean deleted = false;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Cart> carts;
 
     @CreatedDate

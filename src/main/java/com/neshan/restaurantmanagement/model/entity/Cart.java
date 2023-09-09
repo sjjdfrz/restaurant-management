@@ -46,8 +46,12 @@ public class Cart {
     @LastModifiedDate
     private Date modified_at;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection//(fetch = FetchType.EAGER)
     private List<CartItem> cartItems;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void addCartItem(CartItem cartItem) {
         if (cartItems == null) {

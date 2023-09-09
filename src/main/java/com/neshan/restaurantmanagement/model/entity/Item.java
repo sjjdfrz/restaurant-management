@@ -48,8 +48,6 @@ public class Item {
     @Builder.Default
     private ItemStatus itemStatus = ItemStatus.AVAILABLE;
 
-    //private int discount;
-
     @Builder.Default
     private boolean deleted = false;
 

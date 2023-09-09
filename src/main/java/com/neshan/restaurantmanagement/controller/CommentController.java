@@ -3,13 +3,14 @@ package com.neshan.restaurantmanagement.controller;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.CommentDto;
 import com.neshan.restaurantmanagement.model.dto.CommentRequestDto;
+import com.neshan.restaurantmanagement.model.entity.User;
 import com.neshan.restaurantmanagement.service.CommentService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,10 +69,10 @@ public class CommentController {
 
     @GetMapping("/my-comments")
     public ResponseEntity<ApiResponse<List<CommentDto>>> getAllCommentsOfUser(
-            HttpServletRequest request
+            @AuthenticationPrincipal User user
     ) {
 
-        var comments = commentService.getAllCommentsOfUser(request);
+        var comments = commentService.getAllCommentsOfUser(user);
 
         var response = ApiResponse
                 .<List<CommentDto>>builder()
@@ -85,11 +86,10 @@ public class CommentController {
     @PostMapping("/items/{itemId}/comments")
     public ResponseEntity<ApiResponse<Object>> addComment(
             @PathVariable long itemId,
-            HttpServletRequest request,
+            @AuthenticationPrincipal User user,
             @Valid @RequestBody CommentRequestDto commentRequestDto
     ) {
-
-        commentService.addComment(itemId, request, commentRequestDto);
+        commentService.addComment(itemId, user, commentRequestDto);
 
         var response = ApiResponse
                 .builder()

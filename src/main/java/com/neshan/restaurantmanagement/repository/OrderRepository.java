@@ -12,6 +12,10 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+    List<Order> findAllByUserId(long userId);
+
+    Order findByUserIdAndId(long userId, long id);
+
     @Query("""
             SELECT o
             FROM Order o

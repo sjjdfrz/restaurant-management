@@ -4,9 +4,13 @@ import com.neshan.restaurantmanagement.cache.RestaurantCache;
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.mapper.RestaurantMapper;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
+import com.neshan.restaurantmanagement.model.dto.RestaurantsDto;
 import com.neshan.restaurantmanagement.model.entity.Restaurant;
 import com.neshan.restaurantmanagement.repository.RestaurantRepository;
+import com.neshan.restaurantmanagement.util.PaginationSorting;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,47 +25,55 @@ public class RestaurantService {
     private RestaurantCache restaurantCache;
 
     @Transactional
-    public List<RestaurantDto> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
+    public List<RestaurantsDto> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
+
+        if (restaurantCache.getRestaurants().isEmpty()) {
+
+            List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
+            Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
+
+            return restaurantRepository
+                    .findAll(paging)
+                    .map(restaurant -> restaurantMapper.restaurantToRestaurantsDto(restaurant))
+                    .getContent();
+        }
 
         return restaurantCache
                 .getRestaurants()
                 .values()
                 .stream()
+                .map(restaurant -> restaurantMapper.restaurantToRestaurantsDto(restaurant))
                 .toList();
-
-//        List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
-//        Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
-//
-//        return restaurantRepository
-//                .findAll(paging)
-//                .map(restaurant -> restaurantMapper.restaurantToRestaurantDto(restaurant))
-//                .getContent();
     }
 
     @Transactional
     public RestaurantDto getRestaurant(long id) {
 
-        return restaurantCache.getRestaurants().get(id);
+        if (restaurantCache.getRestaurants().isEmpty()) {
 
-//        Restaurant restaurant = restaurantRepository
-//                .findById(id)
-//                .orElseThrow(() -> new NoSuchElementFoundException(
-//                        String.format("The restaurant with ID %d was not found.", id)));
-//
-//        return restaurantMapper.restaurantToRestaurantDto(restaurant);
+            Restaurant restaurant = restaurantRepository
+                    .findById(id)
+                    .orElseThrow(() -> new NoSuchElementFoundException(
+                            String.format("The restaurant with ID %d was not found.", id)));
+
+            return restaurantMapper.restaurantToRestaurantDto(restaurant);
+        }
+
+        return restaurantMapper
+                .restaurantToRestaurantDto(restaurantCache.getRestaurants().get(id));
     }
 
     @Transactional
-    public void createRestaurant(RestaurantDto restaurantDto) {
+    public void createRestaurant(RestaurantsDto restaurantsDto) {
 
-        Restaurant restaurant = restaurantMapper.restaurantDtoToRestaurant(restaurantDto);
-        restaurantRepository.save(restaurant);
+        Restaurant restaurant = restaurantMapper.restaurantsDtoToRestaurant(restaurantsDto);
+        restaurantRepository.saveAndFlush(restaurant);
 
-       restaurantCache.add(restaurantMapper.restaurantToRestaurantDto(restaurant));
+        restaurantCache.add(restaurant);
     }
 
     @Transactional
-    public void updateRestaurant(long id, RestaurantDto restaurantRequest) {
+    public void updateRestaurant(long id, RestaurantsDto restaurantRequest) {
 
         Restaurant restaurant = restaurantRepository
                 .findById(id)
@@ -71,7 +83,7 @@ public class RestaurantService {
         restaurantMapper.updateRestaurantFromDto(restaurantRequest, restaurant);
         restaurantRepository.save(restaurant);
 
-        restaurantCache.update(id, restaurantMapper.restaurantToRestaurantDto(restaurant));
+        restaurantCache.update(id, restaurant);
     }
 
     @Transactional

@@ -5,14 +5,14 @@ import com.neshan.restaurantmanagement.mapper.OrderMapper;
 import com.neshan.restaurantmanagement.model.OrderStatus;
 import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
+import com.neshan.restaurantmanagement.model.dto.OrdersDto;
 import com.neshan.restaurantmanagement.model.dto.SalesStatsDto;
 import com.neshan.restaurantmanagement.model.entity.Cart;
 import com.neshan.restaurantmanagement.model.entity.Order;
 import com.neshan.restaurantmanagement.model.entity.User;
+import com.neshan.restaurantmanagement.repository.CartRepository;
 import com.neshan.restaurantmanagement.repository.OrderRepository;
-import com.neshan.restaurantmanagement.repository.UserRepository;
 import com.neshan.restaurantmanagement.util.PaginationSorting;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,17 +27,17 @@ public class OrderService {
 
     private OrderRepository orderRepository;
     private OrderMapper orderMapper;
-    private UserRepository userRepository;
+    private CartRepository cartRepository;
 
     @Transactional
-    public List<OrderDto> getAllOrders(int pageNo, int pageSize, String sortBy) {
+    public List<OrdersDto> getAllOrders(int pageNo, int pageSize, String sortBy) {
 
         List<Sort.Order> orders = PaginationSorting.getOrders(sortBy);
         Pageable paging = PaginationSorting.getPaging(pageNo, pageSize, orders);
 
         return orderRepository
                 .findAll(paging)
-                .map(order -> orderMapper.orderToOrderDto(order))
+                .map(order -> orderMapper.orderToOrdersDto(order))
                 .getContent();
     }
 
@@ -53,43 +53,27 @@ public class OrderService {
     }
 
     @Transactional
-    public List<OrderDto> getAllOrdersOfUser(HttpServletRequest request) {
+    public List<OrdersDto> getAllOrdersOfUser(User user) {
 
-        User user = (User) request.getAttribute("user");
-
-        return user
-                .getOrders()
+        return orderRepository
+                .findAllByUserId(user.getId())
                 .stream()
-                .map(order -> orderMapper.orderToOrderDto(order))
+                .map(order -> orderMapper.orderToOrdersDto(order))
                 .toList();
     }
 
     @Transactional
-    public OrderDto getOrderOfUser(HttpServletRequest request, long id) {
+    public OrderDto getOrderOfUser(User user, long id) {
 
-        User user = (User) request.getAttribute("user");
-
-        Order userOrder = user
-                .getOrders()
-                .stream()
-                .filter(order -> order.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        String.format("The order with ID %d was not found.", id)));
-
+        Order userOrder = orderRepository.findByUserIdAndId(user.getId(), id);
         return orderMapper.orderToOrderDto(userOrder);
     }
 
     @Transactional
-    public OrderDto createOrder(long cartId, HttpServletRequest request) {
+    public OrdersDto createOrder(long cartId, User user) {
 
-        User user = (User) request.getAttribute("user");
-
-        Cart userCart = user
-                .getCarts()
-                .stream()
-                .filter(cart -> cart.getId() == cartId)
-                .findFirst()
+        Cart userCart = cartRepository
+                .findById(cartId)
                 .orElseThrow(() -> new NoSuchElementFoundException(
                         String.format("The cart with ID %d was not found.", cartId)));
 
@@ -105,16 +89,18 @@ public class OrderService {
                 .orderStatus(OrderStatus.PREPARING)
                 .user(user)
                 .deliveryTime((new Random().nextInt(31) + 30) + "دقیقه")
-                .items(userCart.getCartItems())
                 .build();
 
-        user.addOrder(order);
-        userRepository.save(user);
-        return orderMapper.orderToOrderDto(orderRepository.findLastByUserId(user.getId()));
+        userCart
+                .getCartItems()
+                .forEach(order::addCartItem);
+
+        orderRepository.save(order);
+        return orderMapper.orderToOrdersDto(orderRepository.findLastByUserId(user.getId()));
     }
 
     @Transactional
-    public void updateOrder(long id, OrderDto orderRequest) {
+    public void updateOrder(long id, OrdersDto orderRequest) {
 
         Order order = orderRepository
                 .findById(id)
@@ -166,7 +152,6 @@ public class OrderService {
         Date daysAgo = cal.getTime();
 
         return orderRepository.getTopItemsOfLastDays(daysAgo, current);
-
     }
 
     @Transactional
