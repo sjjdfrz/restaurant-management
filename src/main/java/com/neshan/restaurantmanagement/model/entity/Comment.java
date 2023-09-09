@@ -28,7 +28,10 @@ public class Comment {
             sequenceName = "menu_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "menu_sequence"
+    )
     @Column(updatable = false)
     private long id;
 
@@ -36,6 +39,7 @@ public class Comment {
 
     @OneToOne
     private User user;
+
     private String response;
     private int score;
 

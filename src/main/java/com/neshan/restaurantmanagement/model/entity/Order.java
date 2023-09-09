@@ -31,7 +31,10 @@ public class Order {
             sequenceName = "order_sequence",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "order_sequence"
+    )
     @Column(updatable = false)
     private long id;
 
@@ -45,8 +48,8 @@ public class Order {
     @Builder.Default
     private boolean deleted = false;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<CartItem> items;
+    @ElementCollection
+    private List<CartItem> items = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

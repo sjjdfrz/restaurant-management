@@ -3,16 +3,23 @@ package com.neshan.restaurantmanagement.model.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record CommentRequestDto(
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class CommentRequestDto {
 
-        long id,
+    private long id;
 
-        @NotBlank
-        String body,
+    @NotBlank
+    private String body;
 
-        @Min(1)
-        @Max(5)
-        int score
-) {
+    @Min(1)
+    @Max(5)
+    private Integer score;
 }

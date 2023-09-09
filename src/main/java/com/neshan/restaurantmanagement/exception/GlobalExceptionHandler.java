@@ -2,6 +2,8 @@ package com.neshan.restaurantmanagement.exception;
 
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.jsonwebtoken.JwtException;
+import org.redisson.client.RedisConnection;
+import org.redisson.client.RedisConnectionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -25,14 +27,6 @@ public class GlobalExceptionHandler {
         ErrorResponse err = buildErrorResponse("Too many requests!");
         return new ResponseEntity<>(err, HttpStatus.TOO_MANY_REQUESTS);
     }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleExpiredJwtException(JwtException exc) {
-
-        ErrorResponse err = buildErrorResponse(exc);
-        return new ResponseEntity<>(err, HttpStatus.UNAUTHORIZED);
-    }
-
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception exc) {

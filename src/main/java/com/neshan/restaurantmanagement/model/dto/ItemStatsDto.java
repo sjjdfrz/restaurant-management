@@ -1,8 +1,7 @@
 package com.neshan.restaurantmanagement.model.dto;
 
-public record ItemStatsDto(
+public interface ItemStatsDto{
 
-        String name,
-        int quantity
-) {
+    String getName();
+    int getQuantity();
 }

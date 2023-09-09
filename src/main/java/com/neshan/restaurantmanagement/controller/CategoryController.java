@@ -1,6 +1,7 @@
 package com.neshan.restaurantmanagement.controller;
 
 import com.neshan.restaurantmanagement.model.ApiResponse;
+import com.neshan.restaurantmanagement.model.dto.CategoriesDto;
 import com.neshan.restaurantmanagement.model.dto.CategoryDto;
 import com.neshan.restaurantmanagement.service.CategoryService;
 import com.neshan.restaurantmanagement.util.AppConstants;
@@ -21,7 +22,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/categories")
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategories(
+    public ResponseEntity<ApiResponse<List<CategoriesDto>>> getAllCategories(
             @RequestParam(
                     value = "page",
                     defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
@@ -38,7 +39,7 @@ public class CategoryController {
         var categories = categoryService.getAllCategories(pageNo, pageSize, sortBy);
 
         var response = ApiResponse
-                .<List<CategoryDto>>builder()
+                .<List<CategoriesDto>>builder()
                 .status("success")
                 .data(categories)
                 .build();
@@ -60,27 +61,12 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/restaurants/{restaurantId}/categories")
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategoriesOfRestaurant(
-            @PathVariable Long restaurantId) {
-
-        var categories = categoryService.getAllCategoriesOfRestaurant(restaurantId);
-
-        var response = ApiResponse
-                .<List<CategoryDto>>builder()
-                .status("success")
-                .data(categories)
-                .build();
-
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/restaurants/{restaurantId}/categories")
     public ResponseEntity<ApiResponse<Object>> createCategory(
             @PathVariable long restaurantId,
-            @Valid @RequestBody CategoryDto categoryDto) {
+            @Valid @RequestBody CategoriesDto categoriesDto) {
 
-        categoryService.createCategory(restaurantId, categoryDto);
+        categoryService.createCategory(restaurantId, categoriesDto);
 
         var response = ApiResponse
                 .builder()
@@ -95,9 +81,9 @@ public class CategoryController {
     @PatchMapping("/categories/{id}")
     public ResponseEntity<ApiResponse<Object>> updateCategory(
             @PathVariable long id,
-            @RequestBody CategoryDto categoryDto) {
+            @RequestBody CategoriesDto categoriesDto) {
 
-        categoryService.updateCategory(id, categoryDto);
+        categoryService.updateCategory(id, categoriesDto);
 
         var response = ApiResponse
                 .builder()

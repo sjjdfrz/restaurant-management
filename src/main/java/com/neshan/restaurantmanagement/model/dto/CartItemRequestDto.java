@@ -1,8 +1,16 @@
 package com.neshan.restaurantmanagement.model.dto;
 
-public record CartItemRequestDto(
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-        Integer quantity,
-        long itemId
-) {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class CartItemRequestDto {
+
+    private Integer quantity;
+    private long itemId;
 }

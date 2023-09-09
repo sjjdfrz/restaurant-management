@@ -1,4 +1,4 @@
-package com.neshan.restaurantmanagement.security;
+package com.neshan.restaurantmanagement.model.dto;
 
 
 import jakarta.validation.constraints.Email;
