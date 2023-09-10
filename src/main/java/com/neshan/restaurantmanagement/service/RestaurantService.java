@@ -1,5 +1,8 @@
 package com.neshan.restaurantmanagement.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neshan.restaurantmanagement.amqp.RabbitMQMessageProducer;
 import com.neshan.restaurantmanagement.cache.RestaurantCache;
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.mapper.RestaurantMapper;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +27,7 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
     private RestaurantMapper restaurantMapper;
     private RestaurantCache restaurantCache;
+    private RabbitMQMessageProducer rabbitMQMessageProducer;
 
     @Transactional
     public List<RestaurantsDto> getAllRestaurants(int pageNo, int pageSize, String sortBy) {
@@ -47,7 +52,7 @@ public class RestaurantService {
     }
 
     @Transactional
-    public RestaurantDto getRestaurant(long id) {
+    public RestaurantDto getRestaurant(long id) throws JsonProcessingException {
 
         if (restaurantCache.getRestaurants().isEmpty()) {
 
@@ -56,11 +61,42 @@ public class RestaurantService {
                     .orElseThrow(() -> new NoSuchElementFoundException(
                             String.format("The restaurant with ID %d was not found.", id)));
 
+
+            String log = String.format("%s Restaurant with id: %d was seen in %s",
+                    restaurant.getName(),
+                    restaurant.getId(),
+                    LocalDateTime.now());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            byte[] payloadBytes = objectMapper.writeValueAsBytes(log);
+
+            rabbitMQMessageProducer.publish(
+                    "internal.exchange",
+                    "internal.logger.routing-key",
+                    payloadBytes
+            );
+
             return restaurantMapper.restaurantToRestaurantDto(restaurant);
         }
 
+        Restaurant restaurant = restaurantCache.getRestaurants().get(id);
+
+        String log = String.format("%s Restaurant with id: %d was seen in %s",
+                restaurant.getName(),
+                restaurant.getId(),
+                LocalDateTime.now());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        byte[] payloadBytes = objectMapper.writeValueAsBytes(log);
+
+        rabbitMQMessageProducer.publish(
+                "internal.exchange",
+                "internal.logger.routing-key",
+                payloadBytes
+        );
+
         return restaurantMapper
-                .restaurantToRestaurantDto(restaurantCache.getRestaurants().get(id));
+                .restaurantToRestaurantDto(restaurant);
     }
 
     @Transactional

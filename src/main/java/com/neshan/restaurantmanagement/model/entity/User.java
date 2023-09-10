@@ -1,6 +1,6 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.neshan.restaurantmanagement.model.Role;
+import com.neshan.restaurantmanagement.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -56,7 +56,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Role role = Role.USER;
 

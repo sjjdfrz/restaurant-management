@@ -1,6 +1,6 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.neshan.restaurantmanagement.model.ItemStatus;
+import com.neshan.restaurantmanagement.model.enums.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -44,7 +44,6 @@ public class Item {
 
     private String description;
 
-    @Enumerated(value = EnumType.STRING)
     @Builder.Default
     private ItemStatus itemStatus = ItemStatus.AVAILABLE;
 
