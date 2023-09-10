@@ -2,7 +2,7 @@ package com.neshan.restaurantmanagement.service;
 
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
 import com.neshan.restaurantmanagement.mapper.OrderMapper;
-import com.neshan.restaurantmanagement.model.OrderStatus;
+import com.neshan.restaurantmanagement.model.enums.OrderStatus;
 import com.neshan.restaurantmanagement.model.dto.ItemStatsDto;
 import com.neshan.restaurantmanagement.model.dto.OrderDto;
 import com.neshan.restaurantmanagement.model.dto.OrdersDto;

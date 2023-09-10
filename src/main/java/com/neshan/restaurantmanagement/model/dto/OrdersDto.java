@@ -1,7 +1,7 @@
 package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.neshan.restaurantmanagement.model.OrderStatus;
+import com.neshan.restaurantmanagement.model.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
