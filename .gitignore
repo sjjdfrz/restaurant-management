@@ -3,6 +3,9 @@ src/main/resources/application.properties
 src/main/resources/application.yml
 spring-shell.log
 
+
+src/main/java/com/neshan/restaurantmanagement/runner/
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
