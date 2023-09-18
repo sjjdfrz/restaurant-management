@@ -1,6 +1,6 @@
 //package com.neshan.restaurantmanagement.runner;
 //
-//import com.neshan.restaurantmanagement.model.Role;
+//import com.neshan.restaurantmanagement.model.enums.Role;
 //import com.neshan.restaurantmanagement.model.entity.User;
 //import com.neshan.restaurantmanagement.repository.*;
 //import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.neshan.restaurantmanagement.validation;
 
 import com.neshan.restaurantmanagement.exception.NoSuchElementFoundException;
-import com.neshan.restaurantmanagement.model.ItemStatus;
+import com.neshan.restaurantmanagement.model.enums.ItemStatus;
 import com.neshan.restaurantmanagement.model.dto.CartItemRequestDto;
 import com.neshan.restaurantmanagement.model.entity.Item;
 import com.neshan.restaurantmanagement.repository.ItemRepository;

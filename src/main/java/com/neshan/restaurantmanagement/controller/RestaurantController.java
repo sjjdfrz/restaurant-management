@@ -1,5 +1,6 @@
 package com.neshan.restaurantmanagement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neshan.restaurantmanagement.model.ApiResponse;
 import com.neshan.restaurantmanagement.model.dto.RestaurantDto;
 import com.neshan.restaurantmanagement.model.dto.RestaurantsDto;
@@ -51,7 +52,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<RestaurantDto>> getRestaurant(
-            @PathVariable long id) {
+            @PathVariable long id) throws JsonProcessingException {
 
         var restaurant = restaurantService.getRestaurant(id);
 

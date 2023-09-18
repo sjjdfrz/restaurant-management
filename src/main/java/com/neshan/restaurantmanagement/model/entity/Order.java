@@ -1,6 +1,6 @@
 package com.neshan.restaurantmanagement.model.entity;
 
-import com.neshan.restaurantmanagement.model.OrderStatus;
+import com.neshan.restaurantmanagement.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -40,7 +40,6 @@ public class Order {
 
     private double totalCost;
 
-    @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
 
     String deliveryTime;

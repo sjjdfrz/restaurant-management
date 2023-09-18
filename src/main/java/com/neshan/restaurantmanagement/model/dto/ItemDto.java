@@ -1,9 +1,7 @@
 package com.neshan.restaurantmanagement.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.neshan.restaurantmanagement.model.ItemStatus;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import com.neshan.restaurantmanagement.model.enums.ItemStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
